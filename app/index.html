@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>二南瓜精选 · 完整饲养套餐报价单</title>
+<style>
+  :root{
+    --bg:#F3F9FD; --card:#fff; --primary:#378ADD; --primary-light:#85B7EB;
+    --primary-50:#E6F1FB; --accent:#FAC775; --accent-deep:#BA7517;
+    --text:#0C447C; --muted:#5F7590; --price:#E8875A; --border:#DCE8F2;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:16px 14px 140px;}
+  .wrap{max-width:820px;margin:0 auto;}
+  button{font-family:inherit;}
+
+  /* 顶栏 */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .logo{width:44px;height:44px;border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .logo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .brand h1{font-size:18px;font-weight:700;line-height:1.2;color:#2B2A28;}
+  .brand p{font-size:12px;color:var(--muted);margin-top:2px;}
+  .mode-btn{border:1px solid var(--primary);background:transparent;color:var(--primary);border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .mode-btn.on{background:var(--primary);color:#fff;}
+
+  /* 示意图 */
+  .diagram-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:4px;position:relative;}
+  .diagram-card svg{width:100%;height:auto;display:block;}
+  .diagram-card img{width:100%;height:auto;display:block;border-radius:10px;cursor:zoom-in;}
+  .diagram-edit{display:none;position:absolute;top:10px;right:10px;background:rgba(12,68,124,.7);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;}
+  body.editing .diagram-edit{display:inline-block;}
+
+  /* 鹦鹉选择 */
+  .bird-group{display:flex;flex-wrap:wrap;gap:10px;}
+  .bird-chip{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;transition:.15s;min-width:0;position:relative;}
+  .bird-chip.active{border-color:var(--primary);background:var(--primary-50);}
+  .bird-chip .binfo{flex:1;min-width:0;}
+  .bird-chip .bname{font-size:13px;font-weight:600;line-height:1.2;}
+  .bird-chip .bnote{font-size:11px;color:var(--muted);}
+  .bird-chip .bprice-col{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
+  .bird-chip .bprice{font-size:12px;color:var(--price);font-weight:600;white-space:nowrap;}
+  .bird-chip .bsub{font-size:10px;color:var(--accent-deep);}
+  .bird-chip .bqty-row{display:flex;align-items:center;gap:6px;margin-top:6px;}
+  .bird-chip .qty-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);font-size:16px;line-height:1;cursor:pointer;color:var(--text);}
+  .bird-chip .qty-btn:active{background:var(--primary-50);}
+  .bird-chip .qty-num{font-size:15px;font-weight:600;min-width:20px;text-align:center;}
+  .bird-chip .edit-btn{position:absolute;top:6px;right:6px;}
+
+  /* 图片缩略图通用(固定正方形 + 居中裁剪) */
+  .thumb{width:58px;height:58px;border-radius:10px;flex-shrink:0;background:var(--primary-50);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+  .thumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+  .thumb .ph{color:var(--muted);font-size:10px;text-align:center;line-height:1.3;padding:4px;}
+
+  /* 鹦鹉/笼子图片位(正方形缩略图) */
+  .bird-chip .bthumb{width:52px;height:52px;border-radius:10px;flex-shrink:0;background:var(--primary-50);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+  .bird-chip .bthumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+  .bird-chip .bthumb .ph{color:var(--muted);font-size:10px;text-align:center;line-height:1.3;padding:4px;}
+  .cage-chip .cthumb{width:52px;height:52px;border-radius:10px;flex-shrink:0;background:var(--primary-50);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+  .cage-chip .cthumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+  .cage-chip .cthumb .ph{color:var(--muted);font-size:10px;text-align:center;line-height:1.3;padding:4px;}
+
+  /* 额外选配区 */
+  .extras{border:2px dashed var(--accent);border-radius:var(--radius);padding:14px;margin-top:4px;background:#FFFDF6;}
+  .extras .ext-title{font-size:14px;font-weight:600;color:var(--accent-deep);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+  .extras .ext-sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+
+  /* 区块 */
+  .sec-title{font-size:15px;font-weight:600;margin:22px 0 12px;display:flex;align-items:center;gap:8px;}
+  .sec-title .num{width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+
+  /* 套餐卡片 */
+  .plans{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .plan{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;position:relative;transition:.15s;}
+  .plan.active{border-color:var(--primary);background:var(--primary-50);}
+  .plan h3{font-size:15px;font-weight:600;margin-bottom:3px;}
+  .plan .desc{font-size:12px;color:var(--muted);min-height:34px;}
+  .plan .price{font-size:20px;font-weight:600;color:var(--price);margin-top:6px;}
+  .plan .check{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;}
+  .plan.active .check{background:var(--primary);border-color:var(--primary);}
+
+  /* 笼子颜色 */
+  .cage-group{display:flex;flex-wrap:wrap;gap:10px;}
+  .cage-chip{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;transition:.15s;min-width:92px;position:relative;}
+  .cage-chip.active{border-color:var(--primary);background:var(--primary-50);}
+  .cage-chip .dot{width:16px;height:16px;border-radius:50%;border:1px solid #ccc;flex-shrink:0;position:absolute;top:6px;right:6px;}
+  .cage-chip .cname{font-size:12px;font-weight:600;text-align:center;line-height:1.2;}
+  .cage-chip .cprice{font-size:12px;color:var(--price);font-weight:600;}
+
+  /* 商品项 */
+  .item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.15s;}
+  .item.checked{border-color:var(--primary);background:var(--primary-50);}
+  .item .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;flex-shrink:0;}
+  .item.checked .box{background:var(--primary);border-color:var(--primary);}
+  .item .info{flex:1;min-width:0;}
+  .item .name{font-size:14px;font-weight:600;}
+  .item .note{font-size:12px;color:var(--muted);}
+  .item .price{font-size:14px;font-weight:600;color:var(--price);white-space:nowrap;}
+
+  /* 编辑按钮（编辑模式下显示） */
+  .edit-btn{display:none;border:1px solid var(--primary);background:transparent;color:var(--primary);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;white-space:nowrap;}
+  body.editing .edit-btn{display:inline-block;}
+  /* 推荐标签 + 二选一标签 */
+  .tag-recommend{display:inline-block;background:linear-gradient(135deg,#FFE0A8,#FAC775);color:#A8631A;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;box-shadow:0 1px 2px rgba(250,199,117,0.4);}
+  .tag-group{display:inline-block;background:#EEF2F7;color:#5F7590;font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;border:1px solid #DCE4EE;}
+  .item.recommend{background:linear-gradient(135deg,#FFFCF3 0%,#FFF6E2 100%);border-color:#F4D28A;box-shadow:0 1px 4px rgba(244,180,90,0.15);}
+
+  /* 空状态 */
+  .empty{background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* 特别需求备注 */
+  .remark-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+  .remark-card textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;font-family:inherit;color:var(--text);min-height:76px;resize:vertical;line-height:1.6;}
+  .remark-card textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(55,138,221,.12);}
+  .remark-hint{font-size:11px;color:var(--muted);margin-top:8px;}
+
+  /* 结算条 */
+  .checkout{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--border);padding:10px 14px;box-shadow:0 -4px 20px rgba(12,68,124,.08);z-index:100;}
+  .checkout-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:10px;}
+  .total-price{font-size:24px;font-weight:600;color:var(--price);line-height:1;}
+  .total-label{font-size:11px;color:var(--muted);}
+  .total-count{font-size:11px;color:var(--muted);margin-top:2px;}
+  .spacer{flex:1;}
+  .btn{border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-ghost{background:transparent;color:var(--primary);border:1px solid var(--primary);}
+  .btn-sm{padding:9px 12px;font-size:13px;}
+  /* 次要操作按钮组 */
+  .checkout-actions{display:flex;gap:8px;}
+
+  /* 编辑弹窗 */
+  .modal-mask{display:none;position:fixed;inset:0;background:rgba(12,68,124,.4);z-index:200;align-items:center;justify-content:center;padding:16px;}
+  .modal-mask.show{display:flex;}
+  .modal{background:#fff;border-radius:var(--radius);padding:20px 22px;width:100%;max-width:460px;max-height:85vh;overflow-y:auto;}
+  .modal h3{font-size:16px;font-weight:600;margin-bottom:16px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600;}
+  .field input,.field textarea,.field select{width:100%;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--text);}
+  .field textarea{min-height:60px;resize:vertical;}
+  .img-upload{display:flex;align-items:center;gap:12px;}
+  .img-upload .preview{width:64px;height:64px;border-radius:10px;background:var(--primary-50);overflow:hidden;border:1px solid var(--border);flex-shrink:0;}
+  .img-upload .preview img{width:100%;height:100%;object-fit:cover;}
+  .img-upload input[type=file]{flex:1;font-size:12px;}
+  .modal .foot{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+  .btn-danger{background:#E24B4A;color:#fff;}
+  .btn-mini{background:var(--primary-50);color:var(--primary);border:1px solid var(--primary-light);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;}
+
+  /* 清单弹窗 */
+  .summary-body{font-size:13px;color:var(--text);}
+  .summary-body .s-group{margin-bottom:14px;}
+  .summary-body .s-title{font-weight:600;font-size:13px;color:var(--primary);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+  .summary-body .s-title .plan-name{color:var(--accent-deep);border-bottom:2px solid var(--accent);text-decoration:none;}
+  .summary-body .s-row{display:flex;justify-content:space-between;gap:10px;padding:3px 0;}
+  .summary-body .s-row .s-name{color:var(--text);}
+  .summary-body .s-row .s-name .tag{color:var(--accent-deep);font-size:10px;background:#FAEEDA;padding:0 5px;border-radius:4px;margin-left:4px;}
+  .summary-body .s-row .s-price{color:var(--muted);white-space:nowrap;}
+  .summary-body .s-total{display:flex;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:2px solid var(--primary);font-size:16px;font-weight:700;}
+  .summary-body .s-total .s-price{color:var(--price);font-size:20px;}
+  .summary-body .s-remark{margin-top:12px;padding:10px 12px;background:#FFFDF6;border:1px solid #F4D28A;border-radius:10px;font-size:12px;line-height:1.6;}
+  .summary-body .s-remark .r-label{font-weight:600;color:var(--accent-deep);margin-bottom:2px;}
+  .summary-body .s-remark .r-text{color:var(--text);white-space:pre-wrap;word-break:break-all;}
+  .summary-hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;}
+
+  /* 图片放大遮罩 */
+  .zoom-mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;}
+  .zoom-mask.show{display:flex;}
+  .zoom-mask img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+
+  @media(max-width:600px){
+    .plans{grid-template-columns:1fr;}
+    .checkout-inner{flex-wrap:wrap;gap:8px;}
+    .checkout-inner > div:first-child{flex:1 1 40%;}
+    .checkout-actions{order:3;width:100%;justify-content:flex-end;}
+    .checkout-actions .btn{flex:1;}
+    .checkout .btn-primary{flex:1 1 auto;}
+    body{padding-bottom:160px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"><img src="/static/logo.jpg" alt="二南瓜精选"></div>
+      <div>
+        <h1>二南瓜精选</h1>
+        <p>完整饲养套餐报价单</p>
+      </div>
+    </div>
+    <button class="mode-btn" id="mode-btn" onclick="toggleMode()">编辑</button>
+  </div>
+
+  <div class="sec-title"><span class="num">1</span>配置示意图</div>
+  <div class="diagram-card" id="diagram">
+    <button class="diagram-edit" onclick="editDiagram()">更换示意图</button>
+    <div id="diagram-content"></div>
+  </div>
+
+  <div class="sec-title"><span class="num">2</span>选择鹦鹉</div>
+  <div class="bird-group" id="bird-group"></div>
+  <div class="sec-title"><span class="num">3</span>选择套餐</div>
+  <div class="plans" id="plans"></div>
+
+  <div class="sec-title"><span class="num">4</span>选择笼子颜色</div>
+  <div class="cage-group" id="cage-group"></div>
+
+  <div class="sec-title"><span class="num">5</span>基础配置</div>
+  <div id="items"></div>
+
+  <div class="sec-title"><span class="num">6</span>育雏配置<span style="font-size:11px;color:var(--muted);font-weight:400;" id="brood-label"></span></div>
+  <div id="brood-items"></div>
+
+  <div class="sec-title"><span class="num">7</span>选配(可选)</div>
+  <div class="extras">
+    <div class="ext-title">✨ 加购好物 · 按需勾选</div>
+    <div class="ext-sub">氛围灯、清洁纸托等提升体验与打理便利度的可选件,不影响基础套餐。</div>
+    <div id="extras"></div>
+    <button class="btn-mini" id="add-extra-btn" style="display:none;margin-top:10px;" onclick="openExtraEdit(null)">+ 添加选配</button>
+  </div>
+
+  <button class="btn-mini" id="add-item-btn" style="display:none;margin-top:8px;" onclick="openItemEdit(null)">+ 添加商品</button>
+
+  <div class="sec-title"><span class="num">8</span>特别需求备注</div>
+  <div class="remark-card">
+    <textarea id="remark-input" placeholder="有什么特别需求写在这里,例如:笼子想要白色、周六方便收货、需要附赠食盒……(会显示在清单里)" oninput="onRemarkInput()"></textarea>
+    <div class="remark-hint">选填 · 填写后会显示在最终清单上,方便商家按需准备</div>
+  </div>
+
+  <div style="height:20px;"></div>
+</div>
+
+<div class="checkout">
+  <div class="checkout-inner">
+    <div>
+      <div class="total-label">预计总价</div>
+      <div class="total-price" id="total-price">¥0</div>
+      <div class="total-count" id="total-count">共 0 项</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="checkout-actions">
+      <button class="btn btn-ghost btn-sm" onclick="showSummary()">清单</button>
+      <button class="btn btn-ghost btn-sm" onclick="copySummary()">复制</button>
+      <button class="btn btn-ghost btn-sm" onclick="openGenImage()">清单图</button>
+    </div>
+    <button class="btn btn-primary" onclick="openSubmit()">提交清单</button>
+  </div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modal-mask" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">编辑商品</h3>
+    <input type="hidden" id="f-id">
+    <div class="field">
+      <label>商品名称</label>
+      <input id="f-name" placeholder="如：达洋大号不锈钢鸟笼">
+    </div>
+    <div class="field">
+      <label>说明（小字）</label>
+      <input id="f-note" placeholder="如：抽拉托盘易清理">
+    </div>
+    <div class="field">
+      <label>价格（元）</label>
+      <input id="f-price" type="number" inputmode="decimal" placeholder="如 398">
+    </div>
+    <div class="field">
+      <label>商品图片</label>
+      <div class="img-upload">
+        <div class="preview" id="f-preview"></div>
+        <input type="file" id="f-file" accept="image/*" onchange="previewFile(this)">
+      </div>
+    </div>
+    <div class="foot">
+      <button class="btn btn-danger" id="f-delete" style="display:none;margin-right:auto;" onclick="deleteItem()">删除</button>
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 清单弹窗 -->
+<div class="modal-mask" id="summary-modal">
+  <div class="modal">
+    <h3>📋 报价清单</h3>
+    <div class="summary-body" id="summary-body"></div>
+    <div class="summary-hint">提示:点右上角「复制报价」可复制纯文本版到剪贴板发微信。</div>
+    <div class="foot">
+      <button class="btn btn-primary" style="margin-left:auto;" onclick="closeSummary()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 生成清单图弹窗 -->
+<div class="modal-mask" id="gen-modal">
+  <div class="modal">
+    <h3>📸 生成清单图</h3>
+    <div class="field">
+      <label>提交者 ID / 姓名 <span style="color:#E24B4A;">*</span></label>
+      <input id="gen-id" placeholder="请输入你的名字或 ID(必填)">
+    </div>
+    <div class="field">
+      <label>日期</label>
+      <input id="gen-date" readonly>
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" onclick="closeGenImage()">取消</button>
+      <button class="btn btn-primary" onclick="generateImage()">生成并下载</button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片放大遮罩 -->
+<div class="zoom-mask" id="zoom-mask" onclick="closeZoom()">
+  <img id="zoom-img" src="" alt="大图">
+</div>
+
+<!-- 提交清单弹窗 -->
+<div class="modal-mask" id="submit-modal">
+  <div class="modal">
+    <h3>📤 提交清单给商家</h3>
+    <div class="field">
+      <label>你的名字 / 昵称 <span style="color:#E24B4A;">*</span></label>
+      <input id="submit-name" placeholder="请输入名字,方便商家联系你">
+    </div>
+    <div class="field">
+      <label>留言(选填)</label>
+      <input id="submit-note" placeholder="例如:颜色要粉色、周六方便收货">
+    </div>
+    <div class="summary-hint">提交后,你当前勾选的所有商品和总价会发送给商家,商家会收到通知。</div>
+    <div class="foot">
+      <button class="btn btn-ghost" onclick="closeSubmit()">取消</button>
+      <button class="btn btn-primary" onclick="doSubmit()">提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA = null;
+var state = {plan:null, cage:null, birdQty:{}, checked:{}, remark:''};
+var editingId = null;
+var pendingFile = null;
+var editingKind = 'item'; // 'item' | 'extra'
+
+function api(path, method, body){
+  return fetch(path, {
+    method: method || 'GET',
+    headers: body ? {'Content-Type':'application/json'} : {},
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function(r){return r.json();});
+}
+
+function load(){
+  api('/api/data').then(function(d){
+    DATA = d;
+    if(!state.plan && d.plans.length) state.plan = d.plans[0].id;
+    if(!state.cage && d.cages.length) state.cage = d.cages[0].id;
+    // 初始化每种鸟的数量为0
+    (d.birds||[]).forEach(function(b){
+      if(state.birdQty[b.id]===undefined) state.birdQty[b.id] = 0;
+    });
+    d.items.forEach(function(it){
+      if(it.defaultSelected && state.checked[it.id]===undefined) state.checked[it.id] = true;
+    });
+    (d.extras||[]).forEach(function(ex){
+      if(ex.defaultSelected && state.checked[ex.id]===undefined) state.checked[ex.id] = true;
+    });
+    render();
+  });
+}
+
+function render(){
+  if(!DATA) return;
+  document.getElementById('shop-name') && (document.getElementById('shop-name').textContent = DATA.shop);
+  document.getElementById('shop-sub') && (document.getElementById('shop-sub').textContent = DATA.subtitle);
+
+  // 配置示意图(支持图片或SVG)
+  var diag = DATA.diagram || '';
+  var diagHtml = '';
+  if(DATA.diagramImg){
+    diagHtml = '<img src="'+DATA.diagramImg+'" alt="配置示意图" onclick="event.stopPropagation();zoomImage(\''+DATA.diagramImg+'\')">';
+  } else if(diag.trim().indexOf('<svg')===0){
+    diagHtml = diag;
+  } else if(diag){
+    diagHtml = '<img src="'+diag+'" alt="配置示意图" onclick="event.stopPropagation();zoomImage(\''+diag+'\')">';
+  }
+  document.getElementById('diagram-content').innerHTML = diagHtml;
+
+  renderBirds();
+
+  // 套餐
+  var plansHtml = '';
+  DATA.plans.forEach(function(p){
+    var items = DATA.items.filter(function(it){
+      if(it.isCage) return false;
+      if(it.plan === 'both') return true;
+      if(it.plan === 'full') return p.id === 'full';
+      return false;
+    });
+    var base = items.reduce(function(s,it){return s+(it.price||0);},0);
+    plansHtml += '<div class="plan '+(state.plan===p.id?'active':'')+'" onclick="selectPlan(\''+p.id+'\')">'
+      + '<div class="check">✓</div><h3>'+p.name+'</h3>'
+      + '<div class="desc">'+p.desc+'</div>'
+      + '<div class="price">¥'+fmt(base)+' 起</div></div>';
+  });
+  document.getElementById('plans').innerHTML = plansHtml;
+
+  // 笼子
+  var cageHtml = '';
+  DATA.cages.forEach(function(c){
+    var cimg = c.img ? '<img src="'+c.img+'" loading="lazy">' : '<span class="ph">暂无<br>图片</span>';
+    cageHtml += '<div class="cage-chip '+(state.cage===c.id?'active':'')+'" onclick="selectCage(\''+c.id+'\')">'
+      + '<span class="dot" style="background:'+c.color+'"></span>'
+      + '<div class="cthumb" onclick="event.stopPropagation();zoomCageImg(\''+c.id+'\')">'+cimg+'</div>'
+      + '<span class="cname">'+c.name+'</span>'
+      + '<span class="cprice">¥'+fmt(c.price)+'</span>'
+      + '<button class="edit-btn" onclick="event.stopPropagation();editCageImg(\''+c.id+'\')">换图</button></div>';
+  });
+  document.getElementById('cage-group').innerHTML = cageHtml;
+
+  // 商品（基础配置 = both；育雏配置 = full）
+  var itemsHtml = '';
+  var baseList = DATA.items.filter(function(it){ return it.plan === 'both'; });
+  var broodList = DATA.items.filter(function(it){ return it.plan === 'full'; });
+
+  if(baseList.length===0){
+    itemsHtml = '<div class="empty">基础配置还没有商品,点「添加商品」来配置</div>';
+  }
+  baseList.forEach(function(it){
+    itemsHtml += itemCard(it);
+  });
+  document.getElementById('items').innerHTML = itemsHtml;
+
+  // 育雏配置(仅 full 套餐显示)
+  var broodHtml = '';
+  if(state.plan === 'full'){
+    broodList.forEach(function(it){
+      broodHtml += itemCard(it);
+    });
+    document.getElementById('brood-label').textContent = '';
+  } else {
+    broodHtml = '<div class="empty">当前套餐(学吃)不需要育雏配置,切换「手动育雏」套餐后显示</div>';
+    document.getElementById('brood-label').textContent = '(本套餐无需)';
+  }
+  document.getElementById('brood-items').innerHTML = broodHtml;
+
+  // 额外选配
+  var extrasHtml = '';
+  // 按 group 分组,同 group 商品会显示"二选一"提示
+  var exGrouped = {};
+  (DATA.extras||[]).forEach(function(ex){
+    var g = ex.group || ('__single__' + ex.id);
+    exGrouped[g] = exGrouped[g] || [];
+    exGrouped[g].push(ex);
+  });
+  Object.keys(exGrouped).forEach(function(g){
+    var items = exGrouped[g];
+    var isGroup = items.length > 1;
+    items.forEach(function(ex){
+      var checked = state.checked[ex.id] ? 'checked' : '';
+      var img = ex.img ? '<img src="'+ex.img+'" loading="lazy">' : '<span class="ph">暂无图片</span>';
+      var tag = ex.recommend ? '<span class="tag-recommend">★ 推荐</span>' : '';
+      var groupTag = isGroup ? '<span class="tag-group">二选一</span>' : '';
+      extrasHtml += '<div class="item '+checked+(ex.recommend?' recommend':'')+'" onclick="toggleExtra(\''+ex.id+'\')">'
+        + '<div class="thumb" onclick="event.stopPropagation();zoomExtra(\''+ex.id+'\')">'+img+'</div>'
+        + '<div class="box">✓</div>'
+        + '<div class="info"><div class="name">'+ex.name+tag+groupTag+'</div><div class="note">'+(ex.note||'')+'</div></div>'
+        + '<span class="price">¥'+fmt(ex.price)+'</span>'
+        + '<button class="edit-btn" onclick="event.stopPropagation();openExtraEdit(\''+ex.id+'\')">编辑</button>'
+        + '</div>';
+    });
+  });
+  document.getElementById('extras').innerHTML = extrasHtml || '<div class="empty">暂无选配,可在编辑模式添加</div>';
+
+  updateTotal();
+}
+
+function updateTotal(){
+  var cage = DATA.cages.find(function(c){return c.id===state.cage;});
+  var total = 0;
+  var count = 0;
+  // 鹦鹉(多种,各自数量求和)
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    if(q > 0){
+      total += b.price * q;
+      count += q;
+    }
+  });
+  // 笼子
+  if(cage){ total += cage.price; count++; }
+  // 基础配置(both) + 育雏配置(full 时)
+  DATA.items.filter(function(it){
+    if(it.isCage) return false;
+    if(it.plan === 'both') return true;
+    if(it.plan === 'full') return state.plan === 'full';
+    return false;
+  }).forEach(function(it){
+    if(state.checked[it.id]){ total += it.price||0; count++; }
+  });
+  // 选配
+  (DATA.extras||[]).forEach(function(ex){
+    if(state.checked[ex.id]){ total += ex.price||0; count++; }
+  });
+  document.getElementById('total-price').textContent = '¥'+fmt(total);
+  document.getElementById('total-count').textContent = '共 '+count+' 项';
+}
+
+function fmt(n){ return (n||0).toLocaleString('zh-CN'); }
+
+function escapeHtml(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function selectPlan(id){ state.plan=id; render(); }
+function selectCage(id){ state.cage=id; render(); }
+function changeBirdQty(birdId, delta){
+  var max = (DATA && DATA.birdQtyMax) ? DATA.birdQtyMax : 4;
+  var cur = state.birdQty[birdId] || 0;
+  var next = cur + delta;
+  if(next < 0) next = 0;
+  if(next > max) next = max;
+  state.birdQty[birdId] = next;
+  // 局部刷新:只重绘鹦鹉区块 + 更新总价,避免整页重载导致滚动/焦点丢失
+  renderBirds();
+  updateTotal();
+}
+
+function renderBirds(){
+  var birdHtml = '';
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    var bimg = b.img ? '<img src="'+b.img+'" loading="lazy">' : '<span class="ph">暂无<br>图片</span>';
+    birdHtml += '<div class="bird-chip '+(q>0?'active':'')+'">'
+      + '<div class="bthumb" onclick="zoomBirdImg(\''+b.id+'\')">'+bimg+'</div>'
+      + '<div class="binfo"><div class="bname">'+b.name+'</div><div class="bnote">'+(b.note||'')+'</div>'
+      + '<div class="bqty-row">'
+      + '<button type="button" class="qty-btn" onclick="changeBirdQty(\''+b.id+'\',-1)">−</button>'
+      + '<span class="qty-num">'+q+'</span>'
+      + '<button type="button" class="qty-btn" onclick="changeBirdQty(\''+b.id+'\',1)">+</button>'
+      + '</div></div>'
+      + '<div class="bprice-col"><span class="bprice">¥'+fmt(b.price)+'/'+b.unit+'</span>'
+      + (q>0 ? '<span class="bsub">小计 ¥'+fmt(b.price*q)+'</span>' : '')
+      + '<button type="button" class="edit-btn" onclick="event.stopPropagation();editBirdImg(\''+b.id+'\')">换图</button>'
+      + '</div></div>';
+  });
+  document.getElementById('bird-group').innerHTML = birdHtml;
+}
+function toggleItem(id){
+  var it = DATA.items.find(function(x){return x.id===id;});
+  if(!it) return;
+  // group 单选互斥:同 group 只能选一个
+  if(it.group && !state.checked[id]){
+    DATA.items.filter(function(x){return x.group === it.group;}).forEach(function(x){
+      state.checked[x.id] = false;
+    });
+  }
+  state.checked[id] = !state.checked[id];
+  render();
+}
+function toggleExtra(id){
+  var ex = (DATA.extras||[]).find(function(x){return x.id===id;});
+  if(!ex) return;
+  // group 单选互斥
+  if(ex.group && !state.checked[id]){
+    (DATA.extras||[]).filter(function(x){return x.group===ex.group;}).forEach(function(x){
+      state.checked[x.id]=false;
+    });
+  }
+  state.checked[id]=!state.checked[id];
+  render();
+}
+
+function itemCard(it){
+  var checked = state.checked[it.id] ? 'checked' : '';
+  var img = it.img ? '<img src="'+it.img+'" loading="lazy">' : '<span class="ph">暂无图片</span>';
+  var groupTag = it.group ? '<span class="tag-group">二选一</span>' : '';
+  return '<div class="item '+checked+'" onclick="toggleItem(\''+it.id+'\')">'
+    + '<div class="thumb" onclick="event.stopPropagation();zoomImg(\''+it.id+'\')">'+img+'</div>'
+    + '<div class="box">✓</div>'
+    + '<div class="info"><div class="name">'+it.name+groupTag+'</div><div class="note">'+(it.note||'')+'</div></div>'
+    + '<span class="price">¥'+fmt(it.price)+'</span>'
+    + '<button class="edit-btn" onclick="event.stopPropagation();openItemEdit(\''+it.id+'\')">编辑</button>'
+    + '</div>';
+}
+
+function zoomImage(url){
+  if(!url) return;
+  document.getElementById('zoom-img').src = url;
+  document.getElementById('zoom-mask').classList.add('show');
+}
+function closeZoom(){
+  document.getElementById('zoom-mask').classList.remove('show');
+  document.getElementById('zoom-img').src = '';
+}
+
+function zoomImg(id){
+  var it = DATA.items.find(function(x){return x.id===id;});
+  if(!it || !it.img) return;
+  zoomImage(it.img);
+}
+
+function zoomExtra(id){
+  var ex = (DATA.extras||[]).find(function(x){return x.id===id;});
+  if(!ex || !ex.img) return;
+  zoomImage(ex.img);
+}
+
+function zoomBirdImg(id){
+  var b = (DATA.birds||[]).find(function(x){return x.id===id;});
+  if(!b || !b.img) return;
+  zoomImage(b.img);
+}
+
+function zoomCageImg(id){
+  var c = (DATA.cages||[]).find(function(x){return x.id===id;});
+  if(!c || !c.img) return;
+  zoomImage(c.img);
+}
+
+function openExtraEdit(id){
+  var ex = (DATA.extras||[]).find(function(x){return x.id===id;}) || {name:'',note:'',price:'',img:''};
+  // 复用编辑弹窗，标记为选配编辑
+  editingKind = 'extra';
+  editingId = id || null;
+  pendingFile = null;
+  document.getElementById('modal-title').textContent = id ? '编辑选配商品' : '添加选配商品';
+  document.getElementById('f-id').value = id||'';
+  document.getElementById('f-name').value = ex.name||'';
+  document.getElementById('f-note').value = ex.note||'';
+  document.getElementById('f-price').value = ex.price||'';
+  document.getElementById('f-preview').innerHTML = ex.img ? '<img src="'+ex.img+'">' : '';
+  document.getElementById('f-file').value = '';
+  document.getElementById('f-delete').style.display = id ? 'block' : 'none';
+  document.getElementById('modal').classList.add('show');
+}
+
+function toggleMode(){
+  document.body.classList.toggle('editing');
+  var on = document.body.classList.contains('editing');
+  document.getElementById('mode-btn').textContent = on ? '完成' : '编辑';
+  document.getElementById('mode-btn').classList.toggle('on', on);
+  document.getElementById('add-item-btn').style.display = on ? 'inline-block' : 'none';
+  document.getElementById('add-extra-btn').style.display = on ? 'inline-block' : 'none';
+}
+
+function openItemEdit(id){
+  editingKind = 'item';
+  editingId = id;
+  pendingFile = null;
+  var it = id ? DATA.items.find(function(x){return x.id===id;}) : {name:'',note:'',price:'',img:''};
+  document.getElementById('modal-title').textContent = id ? '编辑商品' : '添加商品';
+  document.getElementById('f-id').value = id||'';
+  document.getElementById('f-name').value = it.name||'';
+  document.getElementById('f-note').value = it.note||'';
+  document.getElementById('f-price').value = it.price||'';
+  document.getElementById('f-preview').innerHTML = it.img ? '<img src="'+it.img+'">' : '';
+  document.getElementById('f-file').value = '';
+  document.getElementById('f-delete').style.display = id ? 'block' : 'none';
+  document.getElementById('modal').classList.add('show');
+}
+
+function previewFile(input){
+  var f = input.files[0];
+  if(!f) return;
+  pendingFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('f-preview').innerHTML = '<img src="'+e.target.result+'">';
+  };
+  reader.readAsDataURL(f);
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+function saveItem(){
+  var id = document.getElementById('f-id').value;
+  var name = document.getElementById('f-name').value.trim();
+  var note = document.getElementById('f-note').value.trim();
+  var price = parseFloat(document.getElementById('f-price').value)||0;
+  if(!name){ alert('请填写商品名称'); return; }
+
+  function done(imgUrl){
+    if(editingKind === 'extra'){
+      var ex = (DATA.extras||[]).find(function(x){return x.id===id;});
+      if(ex){
+        ex.name=name; ex.note=note; ex.price=price;
+        if(imgUrl) ex.img = imgUrl;
+      } else {
+        DATA.extras = DATA.extras || [];
+        DATA.extras.push({id:'extra_'+Date.now(), name:name, note:note, price:price, img:imgUrl||'', defaultSelected:false});
+      }
+    } else if(id){
+      var it = DATA.items.find(function(x){return x.id===id;});
+      it.name=name; it.note=note; it.price=price;
+      if(imgUrl) it.img = imgUrl;
+    } else {
+      DATA.items.push({id:'item_'+Date.now(), name:name, note:note, price:price, img:imgUrl, plan:'both', defaultSelected:false});
+    }
+    return persist().then(function(){ closeModal(); render(); });
+  }
+
+  if(pendingFile){
+    cropAndUpload(pendingFile, function(url){
+      done(url);
+    });
+  } else {
+    done(null);
+  }
+}
+
+function deleteItem(){
+  var id = document.getElementById('f-id').value;
+  if(!id) return;
+  if(!confirm('确定删除这个商品吗？')) return;
+  if(editingKind === 'extra'){
+    DATA.extras = (DATA.extras||[]).filter(function(x){return x.id!==id;});
+  } else {
+    DATA.items = DATA.items.filter(function(x){return x.id!==id;});
+  }
+  delete state.checked[id];
+  persist().then(function(){ closeModal(); render(); });
+}
+
+function persist(){
+  return api('/api/save', 'POST', DATA);
+}
+
+function copySummary(){
+  var cage = DATA.cages.find(function(c){return c.id===state.cage;});
+  var plan = DATA.plans.find(function(p){return p.id===state.plan;});
+  var lines = [];
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    if(q > 0) lines.push({n:b.name+' ×'+q, p:b.price*q});
+  });
+  lines.push({n:'笼子：'+cage.name, p:cage.price});
+  // 基础配置（带套餐名标题行，不占价格）
+  lines.push({n:'—— 基础配置 · '+plan.name+' ——', p:0, head:true});
+  DATA.items.filter(function(it){
+    if(it.isCage) return false;
+    if(it.plan === 'both') return true;
+    if(it.plan === 'full') return state.plan === 'full';
+    return false;
+  }).forEach(function(it){
+    if(state.checked[it.id]) lines.push({n:it.name, p:it.price||0});
+  });
+  (DATA.extras||[]).forEach(function(ex){
+    if(state.checked[ex.id]) lines.push({n:'【选配】'+ex.name, p:ex.price||0});
+  });
+  var total = lines.reduce(function(s,l){return s+(l.p||0);},0);
+  var text = DATA.shop + '\n' + '='.repeat(24) + '\n';
+  lines.forEach(function(l){
+    if(l.head){ text += '\n' + l.n + '\n'; }
+    else { text += l.n + '  ¥' + fmt(l.p) + '\n'; }
+  });
+  text += '-'.repeat(24) + '\n合计：¥' + fmt(total);
+  if(state.remark && state.remark.trim()){
+    text += '\n\n【特别需求备注】\n' + state.remark.trim();
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){alert('报价已复制');});
+  } else {
+    prompt('复制以下报价：', text);
+  }
+}
+
+function showSummary(){
+  var cage = DATA.cages.find(function(c){return c.id===state.cage;});
+  var plan = DATA.plans.find(function(p){return p.id===state.plan;});
+  var html = '';
+
+  // 鹦鹉 + 笼子
+  html += '<div class="s-group"><div class="s-title">主体</div>';
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    if(q > 0) html += '<div class="s-row"><span class="s-name">'+b.name+' ×'+q+'</span><span class="s-price">¥'+fmt(b.price*q)+'</span></div>';
+  });
+  html += '<div class="s-row"><span class="s-name">笼子:'+cage.name+'</span><span class="s-price">¥'+fmt(cage.price)+'</span></div>';
+  html += '</div>';
+
+  // 基础配置（标题带套餐名，用圆点间隔 + 着色区分）
+  html += '<div class="s-group"><div class="s-title">基础配置 <span style="color:var(--muted);">·</span> <span class="plan-name">'+plan.name+'</span></div>';
+  DATA.items.filter(function(it){return it.plan==='both';}).forEach(function(it){
+    if(state.checked[it.id]) html += '<div class="s-row"><span class="s-name">'+it.name+'</span><span class="s-price">¥'+fmt(it.price)+'</span></div>';
+  });
+  html += '</div>';
+
+  // 育雏配置
+  if(state.plan === 'full'){
+    html += '<div class="s-group"><div class="s-title">育雏配置</div>';
+    DATA.items.filter(function(it){return it.plan==='full';}).forEach(function(it){
+      if(state.checked[it.id]) html += '<div class="s-row"><span class="s-name">'+it.name+'</span><span class="s-price">¥'+fmt(it.price)+'</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // 选配
+  var checkedExtras = (DATA.extras||[]).filter(function(ex){return state.checked[ex.id];});
+  if(checkedExtras.length){
+    html += '<div class="s-group"><div class="s-title">选配</div>';
+    checkedExtras.forEach(function(ex){
+      html += '<div class="s-row"><span class="s-name">'+ex.name+'</span><span class="s-price">¥'+fmt(ex.price)+'</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // 合计
+  var total = 0;
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    total += b.price * q;
+  });
+  total += cage.price;
+  DATA.items.filter(function(it){return it.plan==='both'||(it.plan==='full'&&state.plan==='full');}).forEach(function(it){
+    if(state.checked[it.id]) total += it.price||0;
+  });
+  (DATA.extras||[]).forEach(function(ex){ if(state.checked[ex.id]) total += ex.price||0; });
+
+  html += '<div class="s-total"><span>合计</span><span class="s-price">¥'+fmt(total)+'</span></div>';
+
+  // 特别需求备注
+  if(state.remark && state.remark.trim()){
+    html += '<div class="s-remark"><div class="r-label">📝 特别需求备注</div><div class="r-text">'+escapeHtml(state.remark.trim())+'</div></div>';
+  }
+
+  document.getElementById('summary-body').innerHTML = html;
+  document.getElementById('summary-modal').classList.add('show');
+}
+
+function closeSummary(){ document.getElementById('summary-modal').classList.remove('show'); }
+
+function onRemarkInput(){
+  state.remark = document.getElementById('remark-input').value;
+}
+
+// ---- 生成清单图 ----
+function openGenImage(){
+  // 自动填当天日期
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = ('0'+(now.getMonth()+1)).slice(-2);
+  var d = ('0'+now.getDate()).slice(-2);
+  document.getElementById('gen-date').value = y+'-'+m+'-'+d;
+  document.getElementById('gen-id').value = '';
+  document.getElementById('gen-modal').classList.add('show');
+}
+function closeGenImage(){ document.getElementById('gen-modal').classList.remove('show'); }
+
+// ---- 提交清单 ----
+function openSubmit(){
+  document.getElementById('submit-name').value = '';
+  document.getElementById('submit-note').value = '';
+  document.getElementById('submit-modal').classList.add('show');
+}
+function closeSubmit(){ document.getElementById('submit-modal').classList.remove('show'); }
+function doSubmit(){
+  var name = document.getElementById('submit-name').value.trim();
+  if(!name){ alert('请先填写你的名字 / 昵称'); return; }
+  var note = document.getElementById('submit-note').value.trim();
+  var data = collectRows();
+  // 组装提交负载
+  var payload = {
+    name: name,
+    note: note,
+    remark: data.remark || '',
+    shop: DATA.shop,
+    groups: data.groups,
+    total: data.total
+  };
+  fetch('/api/submit', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json(); }).then(function(res){
+    if(res && res.ok){
+      closeSubmit();
+      alert('✅ 清单已提交成功!\n\n商家已收到你的选择(总价 ¥'+fmt(data.total)+'),请等待商家联系。');
+    } else {
+      alert('提交失败,请稍后重试,或直接用「生成清单图」把清单发给我。');
+    }
+  }).catch(function(){
+    alert('网络异常,提交失败。请改用「生成清单图」保存图片后发我。');
+  });
+}
+
+// 收集当前选中项,返回 {rows, total}
+function collectRows(){
+  var cage = DATA.cages.find(function(c){return c.id===state.cage;});
+  var plan = DATA.plans.find(function(p){return p.id===state.plan;});
+  var groups = [];
+  var total = 0;
+
+  // 鹦鹉
+  var birdRows = [];
+  (DATA.birds||[]).forEach(function(b){
+    var q = state.birdQty[b.id] || 0;
+    if(q > 0){ birdRows.push({name:b.name+' ×'+q, price:b.price*q}); total += b.price*q; }
+  });
+  // 笼子
+  birdRows.push({name:'笼子:'+cage.name, price:cage.price}); total += cage.price;
+  groups.push({title:'主体', rows:birdRows});
+
+  // 基础配置（标题带套餐名）
+  var baseRows = [];
+  DATA.items.filter(function(it){return it.plan==='both';}).forEach(function(it){
+    if(state.checked[it.id]){ baseRows.push({name:it.name, price:it.price||0}); total += it.price||0; }
+  });
+  groups.push({title:'基础配置 · '+plan.name, rows:baseRows});
+
+  // 育雏配置
+  if(state.plan === 'full'){
+    var broodRows = [];
+    DATA.items.filter(function(it){return it.plan==='full';}).forEach(function(it){
+      if(state.checked[it.id]){ broodRows.push({name:it.name, price:it.price||0}); total += it.price||0; }
+    });
+    groups.push({title:'育雏配置', rows:broodRows});
+  }
+
+  // 选配
+  var extraRows = [];
+  (DATA.extras||[]).forEach(function(ex){
+    if(state.checked[ex.id]){ extraRows.push({name:ex.name, price:ex.price||0}); total += ex.price||0; }
+  });
+  if(extraRows.length) groups.push({title:'选配', rows:extraRows});
+
+  return {groups:groups, total:total, remark:state.remark||''};
+}
+
+function generateImage(){
+  var id = document.getElementById('gen-id').value.trim();
+  if(!id){ alert('请先填写提交者 ID / 姓名'); return; }
+  var date = document.getElementById('gen-date').value;
+
+  var data = collectRows();
+  // 计算画布高度
+  var W = 720;
+  var lineH = 34;
+  var titleH = 44;
+  var headerH = 130;
+  var footerH = 90;
+  var gapH = 20;
+  var remarkH = 0;
+  if(data.remark && data.remark.trim()){
+    // 备注文字换行估算:按每行约 22 个中文字符
+    var rText = data.remark.trim();
+    var rLines = Math.ceil(rText.length / 22);
+    if(rLines < 1) rLines = 1;
+    remarkH = 60 + rLines * 22;
+  }
+  var bodyH = 0;
+  data.groups.forEach(function(g){
+    bodyH += titleH + g.rows.length * lineH + gapH;
+  });
+  var H = headerH + bodyH + remarkH + footerH + 40;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  // 背景
+  ctx.fillStyle = '#F3F9FD';
+  ctx.fillRect(0, 0, W, H);
+  // 白色卡片
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(16, 16, W-32, H-32);
+  ctx.strokeStyle = '#DCE8F2';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(16, 16, W-32, H-32);
+
+  var x = 40;
+  var y = 56;
+
+  // 标题
+  ctx.fillStyle = '#0C447C';
+  ctx.font = 'bold 26px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(DATA.shop, x, y);
+  ctx.fillStyle = '#5F7590';
+  ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(DATA.subtitle, x, y+24);
+
+  // 日期 + 提交者
+  ctx.fillStyle = '#5F7590';
+  ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('日期:'+date, x, y+56);
+  ctx.fillText('提交者:'+id, x+200, y+56);
+
+  // 分隔线
+  y += 76;
+  ctx.strokeStyle = '#378ADD';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(W-40, y);
+  ctx.stroke();
+  y += 24;
+
+  // 分组
+  data.groups.forEach(function(g){
+    if(g.rows.length === 0) return;
+    // 组标题
+    ctx.fillStyle = '#378ADD';
+    ctx.font = 'bold 16px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText(g.title, x, y);
+    y += lineH;
+    // 行
+    g.rows.forEach(function(r){
+      ctx.fillStyle = '#0C447C';
+      ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+      ctx.fillText(r.name, x, y);
+      // 价格右对齐
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#5F7590';
+      ctx.fillText('¥'+fmt(r.price), W-40, y);
+      ctx.textAlign = 'left';
+      y += lineH;
+    });
+    y += gapH;
+  });
+
+  // 合计
+  ctx.strokeStyle = '#378ADD';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x, y-8);
+  ctx.lineTo(W-40, y-8);
+  ctx.stroke();
+  ctx.fillStyle = '#0C447C';
+  ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('合计', x, y+16);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#E8875A';
+  ctx.font = 'bold 26px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('¥'+fmt(data.total), W-40, y+18);
+  ctx.textAlign = 'left';
+
+  // 特别需求备注
+  if(data.remark && data.remark.trim()){
+    y += 44;
+    // 备注卡片背景
+    var rText = data.remark.trim();
+    var rLines = Math.ceil(rText.length / 22);
+    if(rLines < 1) rLines = 1;
+    var rBoxH = 44 + rLines * 22;
+    ctx.fillStyle = '#FFFDF6';
+    ctx.fillRect(x, y-20, W-80, rBoxH);
+    ctx.strokeStyle = '#F4D28A';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y-20, W-80, rBoxH);
+    // 标题
+    ctx.fillStyle = '#BA7517';
+    ctx.font = 'bold 14px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('📝 特别需求备注', x+14, y);
+    y += 24;
+    // 正文(自动换行)
+    ctx.fillStyle = '#0C447C';
+    ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif';
+    var line = '';
+    var cy = y;
+    for(var i=0;i<rText.length;i++){
+      line += rText[i];
+      if(line.length >= 22){
+        ctx.fillText(line, x+14, cy);
+        line = '';
+        cy += 22;
+      }
+    }
+    if(line) ctx.fillText(line, x+14, cy);
+    y = y - 24 + rBoxH - 20;
+  }
+
+  // 底部说明
+  y += 50;
+  ctx.fillStyle = '#8A9BB0';
+  ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('本清单由「'+DATA.shop+'」生成 · 提交者:'+id, x, y);
+
+  // 转图片下载
+  var link = document.createElement('a');
+  link.download = '鹦鹉套装清单_'+date+'_'+id+'.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  closeGenImage();
+}
+
+// 通用:把图片居中裁剪成正方形(默认 512px),再上传,保证所有图尺寸统一
+function cropAndUpload(file, cb){
+  var img = new Image();
+  var url = URL.createObjectURL(file);
+  img.onload = function(){
+    var size = 512; // 统一输出尺寸
+    var canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    // 取短边做正方形裁剪,居中
+    var s = Math.min(img.width, img.height);
+    var sx = (img.width - s) / 2;
+    var sy = (img.height - s) / 2;
+    ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+    URL.revokeObjectURL(url);
+    canvas.toBlob(function(blob){
+      var fd = new FormData();
+      fd.append('file', blob, 'crop.jpg');
+      fetch('/api/upload', {method:'POST', body:fd}).then(function(r){return r.json();}).then(function(res){
+        cb(res.url);
+      });
+    }, 'image/jpeg', 0.9);
+  };
+  img.onerror = function(){
+    // 裁剪失败则原样上传
+    URL.revokeObjectURL(url);
+    var fd = new FormData();
+    fd.append('file', file);
+    fetch('/api/upload', {method:'POST', body:fd}).then(function(r){return r.json();}).then(function(res){
+      cb(res.url);
+    });
+  };
+  img.src = url;
+}
+
+function pickImage(cb){
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(){
+    var f = input.files[0];
+    if(!f) return;
+    cropAndUpload(f, cb);
+  };
+  input.click();
+}
+
+function editDiagram(){
+  pickDiagramImage(function(url){
+    if(url){ DATA.diagramImg = url; persist().then(function(){ render(); }); }
+  });
+}
+
+// 示意图专用:选择图片并走高清上传通道
+function pickDiagramImage(cb){
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(){
+    var f = input.files[0];
+    if(!f) return;
+    uploadDiagramHD(f, cb);
+  };
+  input.click();
+}
+
+// 示意图高清上传:不裁正方形、保持原比例、最大边 1600px、高质量
+function uploadDiagramHD(file, cb){
+  var img = new Image();
+  var url = URL.createObjectURL(file);
+  img.onload = function(){
+    var MAX = 1600;             // 最长边像素上限
+    var w = img.width, h = img.height;
+    var scale = Math.min(1, MAX / Math.max(w, h)); // 只缩小、不放大
+    var outW = Math.round(w * scale);
+    var outH = Math.round(h * scale);
+    var canvas = document.createElement('canvas');
+    canvas.width = outW; canvas.height = outH;
+    var ctx = canvas.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, outW, outH);
+    URL.revokeObjectURL(url);
+    canvas.toBlob(function(blob){
+      var fd = new FormData();
+      fd.append('file', blob, 'diagram.jpg');
+      fetch('/api/upload', {method:'POST', body:fd}).then(function(r){return r.json();}).then(function(res){
+        cb(res.url);
+      });
+    }, 'image/jpeg', 0.95);   // 高质量
+  };
+  img.onerror = function(){
+    URL.revokeObjectURL(url);
+    var fd = new FormData();
+    fd.append('file', file);
+    fetch('/api/upload', {method:'POST', body:fd}).then(function(r){return r.json();}).then(function(res){
+      cb(res.url);
+    });
+  };
+  img.src = url;
+}
+
+function editBirdImg(id){
+  pickImage(function(url){
+    if(!url) return;
+    var b = (DATA.birds||[]).find(function(x){return x.id===id;});
+    if(b){ b.img = url; persist().then(function(){ render(); }); }
+  });
+}
+
+function editCageImg(id){
+  pickImage(function(url){
+    if(!url) return;
+    var c = (DATA.cages||[]).find(function(x){return x.id===id;});
+    if(c){ c.img = url; persist().then(function(){ render(); }); }
+  });
+}
+
+load();
+</script>
+</body>
+</html>

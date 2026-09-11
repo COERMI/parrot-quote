@@ -1,0 +1,15 @@
+# 运行时产物
+__pycache__/
+*.pyc
+*.log
+
+# 提交数据(含用户隐私,勿上传)
+app/submissions.jsonl
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/

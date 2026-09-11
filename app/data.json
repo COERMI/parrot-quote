@@ -1,0 +1,255 @@
+{
+  "shop": "二南瓜精选",
+  "subtitle": "完整饲养套餐报价单",
+  "diagram": "<svg viewBox=\"0 0 720 460\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"bg\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#F3F9FD\"/><stop offset=\"1\" stop-color=\"#E9F3FC\"/></linearGradient></defs><rect width=\"720\" height=\"460\" rx=\"18\" fill=\"url(#bg)\"/><rect x=\"30\" y=\"30\" width=\"660\" height=\"400\" rx=\"14\" fill=\"#FFFFFF\" stroke=\"#DCE8F2\" stroke-width=\"2\"/><text x=\"50\" y=\"62\" font-size=\"19\" font-weight=\"700\" fill=\"#0C447C\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">配置示意图 · 达洋 B6047SS 鸟笼内部布局</text><text x=\"50\" y=\"84\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">两只和尚鹦鹉 · 完整饲养套装(对照下方清单配齐)</text><rect x=\"140\" y=\"106\" width=\"440\" height=\"290\" rx=\"8\" fill=\"#FAFBFD\" stroke=\"#85B7EB\" stroke-width=\"3\"/><rect x=\"60\" y=\"106\" width=\"12\" height=\"290\" rx=\"6\" fill=\"#DCE8F2\"/><rect x=\"648\" y=\"106\" width=\"12\" height=\"290\" rx=\"6\" fill=\"#DCE8F2\"/><rect x=\"60\" y=\"406\" width=\"600\" height=\"12\" rx=\"6\" fill=\"#DCE8F2\"/><rect x=\"160\" y=\"130\" width=\"400\" height=\"150\" rx=\"6\" fill=\"#FFFFFF\" stroke=\"#C7DAEB\" stroke-width=\"2\"/><rect x=\"160\" y=\"130\" width=\"400\" height=\"8\" fill=\"#E6F1FB\"/><text x=\"176\" y=\"158\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">防风笼罩(顶部白布·挡光保温)</text><rect x=\"190\" y=\"166\" width=\"4\" height=\"114\" fill=\"#C7DAEB\"/><rect x=\"436\" y=\"166\" width=\"4\" height=\"114\" fill=\"#C7DAEB\"/><path d=\"M200 320 Q360 250 520 320\" fill=\"none\" stroke=\"#A9703B\" stroke-width=\"13\" stroke-linecap=\"round\"/><text x=\"200\" y=\"348\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">波浪站杆(大号)</text><circle cx=\"360\" cy=\"218\" r=\"5\" fill=\"#378ADD\"/><circle cx=\"390\" cy=\"210\" r=\"4\" fill=\"#FAC775\"/><circle cx=\"330\" cy=\"214\" r=\"4\" fill=\"#8CC63F\"/><circle cx=\"355\" cy=\"232\" r=\"5\" fill=\"#E8875A\"/><circle cx=\"385\" cy=\"226\" r=\"4\" fill=\"#8CC63F\"/><circle cx=\"320\" cy=\"228\" r=\"4\" fill=\"#378ADD\"/><circle cx=\"405\" cy=\"216\" r=\"4\" fill=\"#FAC775\"/><text x=\"420\" y=\"220\" font-size=\"12\" fill=\"#0C447C\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">和尚鹦鹉 ×2</text><rect x=\"478\" y=\"160\" width=\"34\" height=\"44\" rx=\"6\" fill=\"#F4C0D1\" stroke=\"#E88FAD\" stroke-width=\"2\"/><path d=\"M512 182 q10 -22 0 -34\" fill=\"none\" stroke=\"#C7A06B\" stroke-width=\"2.5\"/><path d=\"M512 148 q4 -10 0 -20\" fill=\"none\" stroke=\"#E8875A\" stroke-width=\"2\"/><circle cx=\"512\" cy=\"146\" r=\"3\" fill=\"#FAC775\"/><path d=\"M478 182 q-12 8 -24 4\" fill=\"none\" stroke=\"#C7A06B\" stroke-width=\"2.5\"/><text x=\"466\" y=\"218\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">旋转风车/攀爬玩具</text><rect x=\"180\" y=\"250\" width=\"48\" height=\"52\" rx=\"5\" fill=\"#C9753A\" stroke=\"#8B5A2B\" stroke-width=\"2\"/><rect x=\"190\" y=\"268\" width=\"28\" height=\"20\" rx=\"2\" fill=\"#5A3A1A\"/><text x=\"176\" y=\"320\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">实木鸟窝</text><rect x=\"340\" y=\"370\" width=\"30\" height=\"14\" rx=\"3\" fill=\"#85B7EB\"/><rect x=\"390\" y=\"370\" width=\"30\" height=\"14\" rx=\"3\" fill=\"#FAC775\"/><rect x=\"440\" y=\"370\" width=\"30\" height=\"14\" rx=\"3\" fill=\"#8CC63F\"/><rect x=\"490\" y=\"370\" width=\"30\" height=\"14\" rx=\"3\" fill=\"#E8875A\"/><text x=\"336\" y=\"402\" font-size=\"12\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">陶瓷食碗 ×4</text><rect x=\"610\" y=\"330\" width=\"20\" height=\"44\" rx=\"6\" fill=\"#85B7EB\" opacity=\"0.7\"/><rect x=\"616\" y=\"338\" width=\"8\" height=\"14\" rx=\"2\" fill=\"#FFFFFF\"/><text x=\"596\" y=\"392\" font-size=\"11\" fill=\"#5F7590\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">饮水器</text><text x=\"50\" y=\"436\" font-size=\"11\" fill=\"#8A9BB0\" font-family=\"PingFang SC,Microsoft YaHei,sans-serif\">提示:上图配件与下方清单一一对应 · 点击缩略图可放大看商品图</text></svg>",
+  "birds": [
+    {
+      "id": "bird_blue",
+      "name": "和尚 · 蓝色",
+      "note": "幼鸟 · 带合法标识",
+      "price": 500,
+      "unit": "只",
+      "color": "#378ADD",
+      "img": "/uploads/img_e55301b480274f65b4f851bbd889864b.jpg"
+    },
+    {
+      "id": "bird_green",
+      "name": "和尚 · 绿色",
+      "note": "幼鸟 · 带合法标识",
+      "price": 650,
+      "unit": "只",
+      "color": "#7FB95A",
+      "img": "/uploads/img_8cf2fca042d841dba12629d07fa9610d.jpg"
+    },
+    {
+      "id": "bird_sun",
+      "name": "金太阳鹦鹉",
+      "note": "幼鸟 · 带合法标识",
+      "price": 1300,
+      "unit": "只",
+      "color": "#F0A93C",
+      "img": "/uploads/img_86455d60eefd4feaadbc222a177a49bc.jpg"
+    },
+    {
+      "id": "bird_cockatiel",
+      "name": "玄凤鹦鹉(金冠/白帕)",
+      "note": "黄帕/红帕稍贵 · 幼鸟 · 按对",
+      "price": 700,
+      "unit": "对",
+      "color": "#C0A8D8",
+      "img": "/uploads/img_22c621739b31493cb99e8e7eaed2ccbb.jpg"
+    }
+  ],
+  "birdQty": 2,
+  "birdQtyMax": 4,
+  "cages": [
+    {
+      "id": "cage_white",
+      "name": "达洋 B6047SS 白色",
+      "price": 500,
+      "color": "#FFFFFF",
+      "img": "/uploads/img_1dc09d4e47c349bfaa532f676382a498.jpg"
+    },
+    {
+      "id": "cage_pink",
+      "name": "达洋 B6047SS 粉色",
+      "price": 500,
+      "color": "#F4C0D1",
+      "img": "/uploads/img_f76d0bb9b6cd4f388b73f0a15a14515b.jpg"
+    }
+  ],
+  "plans": [
+    {
+      "id": "simple",
+      "name": "未完全断奶 · 学吃",
+      "desc": "不需要育雏配置(基础配置即可)"
+    },
+    {
+      "id": "full",
+      "name": "未断奶 · 手动育雏",
+      "desc": "需要育雏配置(保温箱+奶粉+喂养工具)"
+    }
+  ],
+  "items": [
+    {
+      "id": "nest",
+      "name": "笼内实木鸟窝",
+      "note": "提供隐蔽空间 · 减少应激",
+      "price": 60,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_067ecf6d3006427d9c0673a085a91712.jpg"
+    },
+    {
+      "id": "perch_wave",
+      "name": "波浪杜鹃根站杆(大号)",
+      "note": "同尺寸造型不同价格不同(40~120)",
+      "price": 82,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_70caa42f37394e228f0f90a2343b3843.jpg",
+      "group": "perch"
+    },
+    {
+      "id": "perch_straight",
+      "name": "梨木直站杆",
+      "note": "与波浪站杆二选一(40~60)",
+      "price": 35,
+      "plan": "both",
+      "defaultSelected": false,
+      "img": "/uploads/img_060584fb2968449e96648b34a97594a4.jpg",
+      "group": "perch"
+    },
+    {
+      "id": "toy_windmill",
+      "name": "旋转风车玩具",
+      "note": "磨爪 · 增加笼内趣味",
+      "price": 20,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_201ca430129c4b42b1e5c62e12fe3f37.jpg"
+    },
+    {
+      "id": "toy_climb",
+      "name": "啃咬攀爬玩具",
+      "note": "玉米芯/坚果/菠萝 · 磨喙",
+      "price": 15,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_9c1756815bea40ef85605b70666903ff.jpg"
+    },
+    {
+      "id": "bowl",
+      "name": "陶瓷防溢采食盘 ×4",
+      "note": "粉/黄/蓝/绿/白 · 装粮/果蔬/补剂",
+      "price": 60,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_8d4cee883314430ba736dde441e5c2ee.jpg"
+    },
+    {
+      "id": "staple",
+      "name": "开元断奶滋养丸(主食)",
+      "note": "一套 · 主食粮",
+      "price": 80,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_370fe1a6716c412bb9f906989d91172a.jpg"
+    },
+    {
+      "id": "consumables",
+      "name": "尿垫45*60 -50片",
+      "note": "好打理 · 日常消耗",
+      "price": 25,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_778ac21c8d644a62ab71ebd8a074077c.jpg"
+    },
+    {
+      "id": "drink",
+      "name": "饮水器(针嘴水壶)",
+      "note": "干净防漏",
+      "price": 15,
+      "plan": "both",
+      "defaultSelected": true,
+      "img": "/uploads/img_4f9fcc0b369645439767a3880c4e4e9a.jpg"
+    },
+    {
+      "id": "incubator",
+      "name": "雏鸟保温箱",
+      "note": "恒温 · 幼鸟专用",
+      "price": 230,
+      "plan": "full",
+      "defaultSelected": true,
+      "img": "/uploads/img_d820d282885547e1911b500384b889ef.jpg"
+    },
+    {
+      "id": "thermo",
+      "name": "温度计",
+      "note": "精确控温 · 幼鸟专用",
+      "price": 30,
+      "plan": "full",
+      "defaultSelected": true,
+      "img": "/uploads/img_be8f3d7c3734473f8fcd681d223ed730.jpg"
+    },
+    {
+      "id": "milk",
+      "name": "凡赛尔奶粉 A19 500g",
+      "note": "高蛋白 · 幼鸟专用",
+      "price": 75,
+      "plan": "full",
+      "defaultSelected": true,
+      "img": "/uploads/img_10ff024cf70948c38c85e99352144e44.jpg"
+    },
+    {
+      "id": "feedtool",
+      "name": "喂养工具",
+      "note": "喂奶勺+注射器+量杯",
+      "price": 15,
+      "plan": "full",
+      "defaultSelected": true,
+      "img": "/uploads/img_da8c89150f81451e9d87e4528e4aec26.jpg"
+    }
+  ],
+  "extras": [
+    {
+      "id": "extra_light",
+      "name": "鹦鹉氛围灯",
+      "note": "照明观察",
+      "price": 45,
+      "defaultSelected": true,
+      "recommend": true,
+      "img": "/uploads/img_202c7bace00040cc8307f275ec39b992.jpg"
+    },
+    {
+      "id": "extra_liner",
+      "name": "粪便清洁纸托",
+      "note": "接粪盘薄膜 · 好打理",
+      "price": 19,
+      "defaultSelected": false,
+      "img": "/uploads/img_2bda91db7d514b34af95b1efaf59fbd3.jpg"
+    },
+    {
+      "id": "extra_sand",
+      "name": "鸟砂",
+      "note": "助消化 · 保健砂",
+      "price": 15,
+      "defaultSelected": false,
+      "img": "/uploads/img_50d77630b6ef492b8eca0f4f4918de1e.jpg"
+    },
+    {
+      "id": "extra_probiotic",
+      "name": "益生菌 + 电解多维",
+      "note": "调理肠胃 · 补充营养",
+      "price": 22,
+      "defaultSelected": true,
+      "recommend": true,
+      "img": "/uploads/img_d7a8620d00034fd387696e91b44e136b.jpg"
+    },
+    {
+      "id": "extra_stand",
+      "name": "站架",
+      "note": "独立站架",
+      "price": 40,
+      "defaultSelected": false,
+      "img": "/uploads/img_28e8d020896a4053a1bc4064d734b90d.jpg"
+    },
+    {
+      "id": "extra_tray",
+      "name": "防溅外置食堂/外出盒",
+      "note": "易打理 · 防撒 · 外带方便",
+      "price": 150,
+      "defaultSelected": false,
+      "img": "/uploads/img_7957a057349d4bd3abcacf427b9383fd.jpg"
+    },
+    {
+      "id": "extra_1789041540334",
+      "name": "达洋适配金属置物架三层 80cm*50cm 高103",
+      "note": "方便收纳鹦鹉用品",
+      "price": 100,
+      "img": "/uploads/img_40725ecc00a94b9fb1bf672fd5f11a0d.jpg",
+      "defaultSelected": false
+    }
+  ],
+  "diagramImg": "/uploads/img_7e6221188e514f8da9d5670b470cddb0.jpg"
+}

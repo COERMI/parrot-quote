@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Wdh6CsFRNJvMXG0knXllwX">
+<head data-page-node-id="YBnPsXPiMenV9FkZn7XpXo">
+<meta charset="UTF-8" data-page-node-id="bZzKvyNK7PMBTxhRWKCMq1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="fuFmG39VgDbPmlN872RIoO">
+<title>羽栖 · 和尚鹦鹉饲养套装报价单</title>
+<style>
+  :root{
+    --bg:#F3F9FD;
+    --card:#FFFFFF;
+    --primary:#378ADD;
+    --primary-light:#85B7EB;
+    --primary-50:#E6F1FB;
+    --accent:#FAC775;
+    --accent-deep:#BA7517;
+    --text:#0C447C;
+    --muted:#5F7590;
+    --price:#E8875A;
+    --border:#DCE8F2;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    padding:24px 16px 120px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+
+  /* 顶部品牌区 */
+  .header{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:24px 28px;
+    border:1px solid var(--border);
+    margin-bottom:20px;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo{
+    width:48px;height:48px;border-radius:14px;
+    background:var(--primary);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:600;flex-shrink:0;
+  }
+  .brand h1{font-size:20px;font-weight:600;letter-spacing:.5px;}
+  .brand p{font-size:13px;color:var(--muted);margin-top:2px;}
+  .tagline{margin-top:14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--border);padding-top:14px;}
+
+  /* 区块标题 */
+  .section-title{
+    font-size:15px;font-weight:600;margin:28px 0 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-title .num{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--primary);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:600;flex-shrink:0;
+  }
+
+  /* 套餐卡片 */
+  .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .plan{
+    background:var(--card);border:2px solid var(--border);
+    border-radius:var(--radius);padding:20px;cursor:pointer;
+    position:relative;transition:all .15s ease;
+  }
+  .plan:hover{border-color:var(--primary-light);}
+  .plan.active{border-color:var(--primary);background:var(--primary-50);}
+  .plan .badge{
+    position:absolute;top:-11px;left:16px;
+    background:var(--accent);color:var(--accent-deep);
+    font-size:11px;font-weight:600;padding:2px 12px;border-radius:10px;
+  }
+  .plan h3{font-size:16px;font-weight:600;margin-bottom:4px;}
+  .plan .desc{font-size:12px;color:var(--muted);min-height:36px;}
+  .plan .from{font-size:11px;color:var(--muted);margin-top:8px;}
+  .plan .price{font-size:22px;font-weight:600;color:var(--price);margin-top:4px;}
+  .plan .check{
+    position:absolute;top:16px;right:16px;width:20px;height:20px;
+    border-radius:50%;border:2px solid var(--border);display:flex;
+    align-items:center;justify-content:center;color:#fff;font-size:12px;
+  }
+  .plan.active .check{background:var(--primary);border-color:var(--primary);}
+
+  /* 产品卡片 */
+  .item{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:14px 16px;margin-bottom:10px;
+    display:flex;align-items:center;gap:14px;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .item:hover{border-color:var(--primary-light);}
+  .item.checked{border-color:var(--primary);background:var(--primary-50);}
+  .item .thumb{
+    width:64px;height:64px;border-radius:10px;flex-shrink:0;
+    background:var(--primary-50);overflow:hidden;cursor:zoom-in;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);
+  }
+  .item .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .item .thumb svg{width:40px;height:40px;}
+  .item .box{
+    width:20px;height:20px;border-radius:6px;border:2px solid var(--border);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;
+    flex-shrink:0;transition:all .15s ease;
+  }
+  .item.checked .box{background:var(--primary);border-color:var(--primary);}
+  .item .info{flex:1;min-width:0;}
+  .item .name{font-size:14px;font-weight:600;}
+  .item .note{font-size:12px;color:var(--muted);}
+  .item .price{font-size:15px;font-weight:600;color:var(--price);white-space:nowrap;}
+  .item.locked{opacity:.45;pointer-events:none;}
+  .item .qty{font-size:12px;color:var(--muted);white-space:nowrap;}
+
+  /* 单选组（色系/站架） */
+  .radio-group{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .radio-chip{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:10px 16px;cursor:pointer;font-size:13px;transition:all .15s ease;
+    display:flex;flex-direction:column;gap:2px;min-width:110px;
+  }
+  .radio-chip:hover{border-color:var(--primary-light);}
+  .radio-chip.active{border-color:var(--primary);background:var(--primary-50);}
+  .radio-chip .lbl{font-weight:600;}
+  .radio-chip .val{font-size:12px;color:var(--price);}
+  .radio-chip .cicon{display:flex;align-items:center;justify-content:center;margin-bottom:2px;}
+
+  /* 分区标签 */
+  .group-label{
+    font-size:13px;font-weight:600;color:var(--muted);
+    margin:20px 0 8px;letter-spacing:1px;
+  }
+  .group-label span{color:var(--primary);}
+
+  /* 结算条 */
+  .checkout{
+    position:fixed;left:0;right:0;bottom:0;
+    background:var(--card);border-top:1px solid var(--border);
+    padding:16px 24px;box-shadow:0 -4px 20px rgba(12,68,124,.06);
+    z-index:100;
+  }
+  .checkout-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:20px;}
+  .total-label{font-size:13px;color:var(--muted);}
+  .total-price{font-size:28px;font-weight:600;color:var(--price);line-height:1;}
+  .total-count{font-size:12px;color:var(--muted);margin-top:4px;}
+  .spacer{flex:1;}
+  .btn{
+    border:none;border-radius:12px;padding:12px 22px;font-size:14px;font-weight:600;
+    cursor:pointer;transition:all .15s ease;
+  }
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:#2b6fc0;}
+  .btn-ghost{background:transparent;color:var(--primary);border:1px solid var(--primary);}
+  .btn-ghost:hover{background:var(--primary-50);}
+
+  /* 导出清单弹层 */
+  .modal-mask{
+    display:none;position:fixed;inset:0;background:rgba(12,68,124,.35);
+    z-index:200;align-items:center;justify-content:center;padding:20px;
+  }
+  .modal-mask.show{display:flex;}
+  .modal{
+    background:#fff;border-radius:var(--radius);padding:24px 28px;
+    max-width:560px;width:100%;max-height:80vh;overflow-y:auto;
+  }
+  .modal h3{font-size:16px;font-weight:600;margin-bottom:16px;}
+  .modal ul{list-style:none;}
+  .modal li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;}
+  .modal li:last-child{border-bottom:none;}
+  .modal .sum{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:2px solid var(--primary);font-size:16px;font-weight:600;}
+  .modal .foot{display:flex;gap:10px;margin-top:20px;}
+
+  /* 图片放大弹层 */
+  .zoom-mask{
+    display:none;position:fixed;inset:0;background:rgba(12,68,124,.55);
+    z-index:300;align-items:center;justify-content:center;padding:30px;
+    cursor:zoom-out;
+  }
+  .zoom-mask.show{display:flex;}
+  .zoom-box{
+    background:#fff;border-radius:var(--radius);padding:20px;
+    max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:14px;
+  }
+  .zoom-box img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:10px;}
+  .zoom-box .zname{font-size:15px;font-weight:600;color:var(--text);}
+  .zoom-box .ztip{font-size:12px;color:var(--muted);}
+  .zoom-box .pholder{width:240px;height:240px;background:var(--primary-50);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .zoom-box .pholder svg{width:150px;height:150px;}
+
+  @media (max-width:600px){
+    .plans{grid-template-columns:1fr;}
+    .checkout-inner{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body data-page-node-id="JO9jwbN4k1tGx3fFzF4Nbs">
+<div class="wrap" data-page-node-id="ZqQBcY4O3qiQMYz0iWyI9p">
+
+  <div class="header" data-page-node-id="GFfT9THXGGUVD1PIQ0olK7">
+    <div class="brand" data-page-node-id="NGl9dYDVOlKcJmUu1qfwxY">
+      <div class="logo" data-page-node-id="Au93Kt4sJc3kAg6Pa3kLl8">羽</div>
+      <div data-page-node-id="utZRjPNqrXBEaHlnzFHuVV">
+        <h1 data-page-node-id="CXT4dO6jj6IwCpC0PMCiwj">羽栖 · 精致鹦鹉生活馆</h1>
+        <p data-page-node-id="MoIm0OHjUGsz6pMKyUV5ic">两只和尚鹦鹉 · 完整饲养套装报价单</p>
+      </div>
+    </div>
+    <div class="tagline" data-page-node-id="0Pnj9uaXYPqWaVMeuFd27E">所有器具围绕「好打理 · 好维护」精选 · 带合法标识 · 支持点选定制</div>
+  </div>
+
+  <!-- 第一步：选套餐 -->
+  <div class="section-title" data-page-node-id="dooUvxjIY4GJEqX41WOtRm"><span class="num" data-page-node-id="qfkRT8vTjcZf9RLg48619Q">1</span>选择你的套餐</div>
+  <div class="plans" data-page-node-id="T4I5aPqnvvuQwiR9wzSnD2">
+    <div class="plan active" data-plan="baby" onclick="selectPlan('baby')" data-page-node-id="SZDKFkqoWxwufFmnxcgFSo">
+      <span class="badge" data-page-node-id="ks82k7m2h9SnSQ9q596Yiw">推荐</span>
+      <div class="check" data-page-node-id="ccEixjn5zH5sv9dd57qi4a">✓</div>
+      <h3 data-page-node-id="nA7IDY0ZwzxlDe3IHlw73a">幼鸟启航</h3>
+      <div class="desc" data-page-node-id="Z4A7yMFEPjyossS402kWju">未断奶幼鸟 · 含保温箱、奶粉与喂养工具</div>
+      <div class="from" data-page-node-id="6hdxao2UF3v6c3hTFCYA2b">适合刚接回家的雏鸟</div>
+      <div class="price" id="plan-baby-price" data-page-node-id="hvktK0AHf29KejENuie1Of">¥4,380 起</div>
+    </div>
+    <div class="plan" data-plan="adult" onclick="selectPlan('adult')" data-page-node-id="oQgEjur7tQBYpemOrAjROn">
+      <div class="check" data-page-node-id="lAOn3hhB2QgSz99DtwnC5Y">✓</div>
+      <h3 data-page-node-id="9kcV0o4g5HjawBIzQV4Owz">成鸟无忧</h3>
+      <div class="desc" data-page-node-id="foeADvYvOKighNRlJBsUF3">已断奶小鸟 · 无需保温箱与奶粉</div>
+      <div class="from" data-page-node-id="nrbo1DQjlOR5AXxNnkpFcX">适合已独立进食的小鸟</div>
+      <div class="price" id="plan-adult-price" data-page-node-id="2XmPbFCkhKsA5rXigJszWu">¥3,180 起</div>
+    </div>
+  </div>
+
+  <!-- 第二步：选主体 -->
+  <div class="section-title" data-page-node-id="KHyw67j5052qIABEgDaReq"><span class="num" data-page-node-id="5xEt79G8rFFO0lFys2HdFR">2</span>选择和尚鹦鹉（两只 · 色系）</div>
+  <div class="group-label" data-page-node-id="3Zkx39kCRvRN3zV7S866sw">A · <span data-page-node-id="DBYJLPYvhSioBCABC9vcNV">主体色系（单选）</span></div>
+  <div class="radio-group" id="color-group" data-page-node-id="EutTex0VaBBqg6JBbIUixy">
+    <div class="radio-chip active" data-color="green" onclick="selectColor('green')" data-page-node-id="eReRANeceqtOx59roKd8I6">
+      <span class="lbl" data-page-node-id="WdHN3jOW6SFHkRWHFJdEHP">绿色（普通色）</span>
+      <span class="val" data-page-node-id="EFo2XHal50a5ji0Mg3oJmk">¥999 / 只</span>
+    </div>
+    <div class="radio-chip" data-color="yellow" onclick="selectColor('yellow')" data-page-node-id="QkpDk63fFXLGQNyDNRqg8R">
+      <span class="lbl" data-page-node-id="YbOPCFrVF1xA2MAQnKfMK1">黄化</span>
+      <span class="val" data-page-node-id="LEmZCklNB7YDnzOEhWgrOM">¥2,200 / 只</span>
+    </div>
+    <div class="radio-chip" data-color="blue" onclick="selectColor('blue')" data-page-node-id="dF349mzZ1D2vOB7jlwclkg">
+      <span class="lbl" data-page-node-id="bLa19HTf6QuhjkSV3ZFGW9">蓝化</span>
+      <span class="val" data-page-node-id="OqzizlM4Zjs62AWv5EjCt1">¥2,600 / 只</span>
+    </div>
+  </div>
+
+  <!-- 第三步：笼具 -->
+  <div class="section-title" data-page-node-id="GsPeMMtK0pUNZee1qhfGxB"><span class="num" data-page-node-id="DUTLTGEQJN9FTkM3mQ1XMR">3</span>笼具与栖架</div>
+  <div class="group-label" data-page-node-id="47SFP0uC1aYGo9pWMvJ6FH">B · <span data-page-node-id="9l8rAy5HIafDTcpW6hkvlL">笼具（默认必选）</span></div>
+  <div class="item checked" data-item="cage" onclick="toggleItem('cage', true)" data-page-node-id="5bZgRL1exdQNaUqD79sbWA">
+    <div class="box" data-page-node-id="Q8hz6nm2L05DFpJ526oSHx">✓</div>
+    <div class="info" data-page-node-id="PanAB7RNN1T9h7fVGhIK0E">
+      <div class="name" data-page-node-id="Nuv67yGzzqwQ3EsSiNBmOn">达洋大号不锈钢鸟笼（宽 60cm）</div>
+      <div class="note" data-page-node-id="19FOBruWVFVoIJDaDocJ36">抽拉托盘易清理 · 防逃设计 · 容纳两只中型鹦鹉</div>
+    </div>
+    <span class="qty" data-page-node-id="hGyqCDaMaPJUgH1Txwb9Wy">×1</span>
+    <span class="price" data-page-node-id="iH1rgsLBC7hxf9veXYdrew">¥398</span>
+  </div>
+
+  <div class="group-label" data-page-node-id="JoHmfXARNVZMS408HBAtJf">C · <span data-page-node-id="w4vCPiA0xxADoAPqU499Jw">站架方案（二选一）</span></div>
+  <div class="radio-group" id="stand-group" data-page-node-id="irF6fVSxDZqM3cxso4D4on">
+    <div class="radio-chip active" data-stand="inner" onclick="selectStand('inner')" data-page-node-id="2KFOnmPrwmNpCdj4lpJXZd">
+      <span class="lbl" data-page-node-id="U2OZAgouKAktkSL809qF5e">笼内自带栖架</span>
+      <span class="val" data-page-node-id="KN0M3Nh2Dx5vB8tzCsEs9M">含在笼价内 ¥0</span>
+    </div>
+    <div class="radio-chip" data-stand="outer" onclick="selectStand('outer')" data-page-node-id="ixtDFYVmZkdjjCD8zpnYHF">
+      <span class="lbl" data-page-node-id="eb06TVH0OH5gSX1Kq8VQm9">独立落地站架</span>
+      <span class="val" data-page-node-id="nR91p07u2Q82vpTzanWCvg">+ ¥120</span>
+    </div>
+  </div>
+
+  <div class="group-label" data-page-node-id="dso8sUUnBxiB0TDff66JY9">D · <span data-page-node-id="YIzqErB9z08pDGAoMAz6al">拓展项（可选）</span></div>
+  <div class="item" data-item="stand_frame" onclick="toggleItem('stand_frame', false)" data-page-node-id="xu636AiFm9QWok3aQvmRdz">
+    <div class="box" data-page-node-id="oiXYEyf1dywkjurJxFO9yp">✓</div>
+    <div class="info" data-page-node-id="fGTIulNjlmhvWUrA4ap9ED">
+      <div class="name" data-page-node-id="ETFWvmWF3P74GmGlmm7jXw">鸟笼架（落地支架 · 带脚轮）</div>
+      <div class="note" data-page-node-id="g3UZ4OMYm6P7iazfOq9iG9">方便移动清扫 · 抬高笼位防潮</div>
+    </div>
+    <span class="qty" data-page-node-id="TGvymE5efjAtg2qpWApSuk">×1</span>
+    <span class="price" data-page-node-id="fbVhC39ykOLtIOtDZDTFDM">¥150</span>
+  </div>
+
+  <!-- 第四步：配件 -->
+  <div class="section-title" data-page-node-id="jBGpK8UwjGa8gSsjzj65zy"><span class="num" data-page-node-id="tPjGeYZP9PFeLdQUnZ9DX0">4</span>配件与用品（好打理）</div>
+  <div class="group-label" data-page-node-id="jU7CtWn69y7uGjwJqIaZjJ">E · <span data-page-node-id="W7l2k3D50Er62IMjrBZFPT">基础配件（默认必选）</span></div>
+  <div class="item checked" data-item="perch" onclick="toggleItem('perch', true)" data-page-node-id="OYWHV9ySWdtmblL9UZjuTe">
+    <div class="box" data-page-node-id="FnbS5LB9rafyXTiY4FOWUz">✓</div>
+    <div class="info" data-page-node-id="zS7OkSBq5bp1GBlqx4323l"><div class="name" data-page-node-id="HxLI7kcynUa0Bgs5GHXWch">磨砂站杆 ×3（不同粗细护脚）</div><div class="note" data-page-node-id="c0lHFbTyKnLa928HrqAFIm">好清洗 · 防滑</div></div>
+    <span class="qty" data-page-node-id="SPT4H7ToQD3EcMotF5BGjv">×1套</span><span class="price" data-page-node-id="hdidFypXjkBoAJyWbeID8D">¥48</span>
+  </div>
+  <div class="item checked" data-item="bowl" onclick="toggleItem('bowl', true)" data-page-node-id="3mlMEx4xh4h5zSGHQtdoOZ">
+    <div class="box" data-page-node-id="Ndotdeo9yzrsYHdYfZ6tAe">✓</div>
+    <div class="info" data-page-node-id="mdpVJ9DRHLHNBj1DhBElLy"><div class="name" data-page-node-id="TliBaF5FaWQXARuTkFCxKE">食盒 + 水盒（带防溅挡板）</div><div class="note" data-page-node-id="DrB4KJg5MaBuHJxWZEYR5e">易拆洗 · 防撒粮</div></div>
+    <span class="qty" data-page-node-id="lV3eD2zafBe2LWdAGECjEz">×2套</span><span class="price" data-page-node-id="iJfbGUkKXfjsygkRqKD40Z">¥36</span>
+  </div>
+  <div class="item checked" data-item="toy" onclick="toggleItem('toy', true)" data-page-node-id="9BxgHGg6AHHrLAU7nJN7JR">
+    <div class="box" data-page-node-id="4l9U14vH9V7qWrfbjCNLht">✓</div>
+    <div class="info" data-page-node-id="GKWA77IibwjBPkUsJpaHYx"><div class="name" data-page-node-id="y7IrCXPKvchlPhMEGaf3TF">咬胶玩具 + 秋千</div><div class="note" data-page-node-id="6YSyCNpcVeSmC86CRjeFPb">和尚是「破坏王」· 消耗精力</div></div>
+    <span class="qty" data-page-node-id="bfR2hOTRLzSzGM6gPpT0ag">×2</span><span class="price" data-page-node-id="S4m9bn5i9oOXgSHeqiCWWr">¥58</span>
+  </div>
+  <div class="item checked" data-item="skirt" onclick="toggleItem('skirt', true)" data-page-node-id="o375XXyylQ0j3nGG9Bnmk6">
+    <div class="box" data-page-node-id="7LEUmtAsXEJyDJfMAqWIHl">✓</div>
+    <div class="info" data-page-node-id="cTqqCGopkYnoCvzOVY36nV"><div class="name" data-page-node-id="qjd1Q6Xl4IWaVVZDOVc03V">防溅裙 + 底网垫料</div><div class="note" data-page-node-id="OJzIHyZF8swgvXesm2HcL4">防撒粮 · 抽拉清洁</div></div>
+    <span class="qty" data-page-node-id="8Te5Ap5Za3kCSK0zfmzaH5">×1</span><span class="price" data-page-node-id="XscEkRZq3GUB6oLCmc6jNH">¥28</span>
+  </div>
+
+  <div class="group-label" data-page-node-id="EodlprLZBZRQaOQw5VOzz7">F · <span data-page-node-id="3UglYQaLJIAxitougT0Zqo">日用品（默认必选）</span></div>
+  <div class="item checked" data-item="seed" onclick="toggleItem('seed', true)" data-page-node-id="HvflO3ALmVlf3hjWyrn7V4">
+    <div class="box" data-page-node-id="FD7jV6IKfl6VngmcFD9Lm1">✓</div>
+    <div class="info" data-page-node-id="bjNqB788dxJwFJCc6LDcGo"><div class="name" data-page-node-id="nUGQzosiXVbYXaebzW8wOC">混合鸟粮 / 种子粮</div><div class="note" data-page-node-id="UK6nnxnpzddkzHQ3HO4h7d">营养均衡 · 日常主食</div></div>
+    <span class="qty" data-page-node-id="PjDM9D1QcVCyn8ylMtix5q">×1</span><span class="price" data-page-node-id="YCeYpxpBQREaF2ZnzNRZJT">¥45</span>
+  </div>
+  <div class="item checked" data-item="grit" onclick="toggleItem('grit', true)" data-page-node-id="xFpGeL1Av1I8eRJrcoap8e">
+    <div class="box" data-page-node-id="nMiizpE0mlyAmWsOBcOLh8">✓</div>
+    <div class="info" data-page-node-id="E2SFKPXy4YFNR7721xT6eU"><div class="name" data-page-node-id="0uEIGGxM0sDPywxKlHoxo4">保健砂 + 钙粉</div><div class="note" data-page-node-id="xJ3xRp1HD3QbhU0Co2XVTu">助消化 · 补钙</div></div>
+    <span class="qty" data-page-node-id="kSQV5tMFD4snkIGTr2BvEU">×1</span><span class="price" data-page-node-id="KhA8GCZrcgT3CDtPr00HzS">¥22</span>
+  </div>
+  <div class="item checked" data-item="spray" onclick="toggleItem('spray', true)" data-page-node-id="0zZ7VljEmYB1wW4HFDzWKc">
+    <div class="box" data-page-node-id="bjZjY7H0GDY0prLdQ1hSAx">✓</div>
+    <div class="info" data-page-node-id="eBmQR3cboWI8QO9A9xm3Hf"><div class="name" data-page-node-id="ceKVtYGBH1Riwdox3ddE4C">鸟用清洁喷雾</div><div class="note" data-page-node-id="GsyqVo70HDZ8On03acXEmS">好打理 · 去污除味</div></div>
+    <span class="qty" data-page-node-id="EeVYX3U8LvGBa2fU2Dd73F">×1</span><span class="price" data-page-node-id="1JSRLvLI4nOXAowSG4Bf3N">¥28</span>
+  </div>
+
+  <!-- 幼鸟专属（仅幼鸟启航套餐显示） -->
+  <div id="baby-section" data-page-node-id="sY83b4TOQWtVY3TlxMYkLu">
+    <div class="group-label" data-page-node-id="eBvyi6WDNiuH9KawJDz8Rf">G · <span data-page-node-id="fXGkq36K1YVpjWEBKwmGCV">幼鸟专属套件（未断奶需要）</span></div>
+    <div class="item checked" data-item="incubator" onclick="toggleItem('incubator', true)" data-page-node-id="M9hMjhBNTUdzm9SjLL5NDX">
+      <div class="box" data-page-node-id="DEL8GT3QVChP2VVYJe5BSm">✓</div>
+      <div class="info" data-page-node-id="5GZh74xSJFtrEGClwVAqJ0"><div class="name" data-page-node-id="bKVX6gm3HFGm3xOQszdkuc">恒温保温箱（风暖 · 带温控）</div><div class="note" data-page-node-id="Nl8xN3DW1xMmXuJHO88jbK">25L以上 · 透明观察窗 · 抽屉清洁</div></div>
+      <span class="qty" data-page-node-id="j5bOzHspP4TsA7lwP8k8mk">×1</span><span class="price" data-page-node-id="Hc9p6O5VFZOhMAavc7C7cu">¥268</span>
+    </div>
+    <div class="item checked" data-item="thermo" onclick="toggleItem('thermo', true)" data-page-node-id="HOo1qUUDARTvaMXuFHDaJv">
+      <div class="box" data-page-node-id="SbTQ3ww09TuxZkzQd8yBGi">✓</div>
+      <div class="info" data-page-node-id="pDAoA54H2ogJzrGJ1waIxb"><div class="name" data-page-node-id="WDJOzHxlkPgGbVGv6Wdww2">温控器 / 温度计</div><div class="note" data-page-node-id="dmrTLUdUDRDU9ppd2qCMQD">精确控温 ±0.5℃</div></div>
+      <span class="qty" data-page-node-id="Lyr4QXCvHuJXQI8miecqRh">×1</span><span class="price" data-page-node-id="Ccg0wB0YnkF8N3YMStdg5F">¥38</span>
+    </div>
+    <div class="item checked" data-item="milk" onclick="toggleItem('milk', true)" data-page-node-id="eKVVI7Pj40lxNcEilZESa0">
+      <div class="box" data-page-node-id="Opvu9JnVVph49c7MhP0RHm">✓</div>
+      <div class="info" data-page-node-id="dQrrSTAYCkKwKzQKetCiVG"><div class="name" data-page-node-id="5zT10k1MGFSseCzotyRAOQ">鹦鹉专用奶粉（凡赛尔 A21 250g）</div><div class="note" data-page-node-id="9ajHmYhjsDHINPcwxlKVvY">高蛋白 · 幼鸟专用</div></div>
+      <span class="qty" data-page-node-id="LVxTqBauS5rYjWDu80YfHL">×1</span><span class="price" data-page-node-id="VUwDCuszyYm7QH3g93q1X8">¥128</span>
+    </div>
+    <div class="item checked" data-item="feedtool" onclick="toggleItem('feedtool', true)" data-page-node-id="rh5b1sXUX2kIkyXyxMBGDi">
+      <div class="box" data-page-node-id="tGHaSDMtIoHrlsDzCeBvnu">✓</div>
+      <div class="info" data-page-node-id="QnkB50Smo4L8iJc5GaYp5V"><div class="name" data-page-node-id="5rqMPChRpumJYaUTYVAIYH">喂养工具套装（喂奶勺/注射器/量杯/温度计）</div><div class="note" data-page-node-id="zbtBmZM0mmNAhBtK4Lozin">成套 · 科学喂养</div></div>
+      <span class="qty" data-page-node-id="NfQ1ZwC7nKfMePreWCOYHU">×1</span><span class="price" data-page-node-id="xrddkIuDlrJN4vMuwhAJO1">¥58</span>
+    </div>
+  </div>
+
+  <!-- 加购区 -->
+  <div class="section-title" data-page-node-id="XGP5dkuGVJEah5bZPCXGdG"><span class="num" data-page-node-id="PbDSDQgrpKK6WkgZSYt7Oa">5</span>可选加购</div>
+  <div class="item" data-item="transport" onclick="toggleItem('transport', false)" data-page-node-id="jGrAgrVUC4DD7M7S7mYvsW">
+    <div class="box" data-page-node-id="Tuy20ly8cQWYuVbjmNL5M7">✓</div>
+    <div class="info" data-page-node-id="2RMJixaWAvp4iqgUcwMijA"><div class="name" data-page-node-id="FrML7JN5EvshPf6H4gyvS4">外出 / 运输笼</div><div class="note" data-page-node-id="tIW6UD2enwgQLg1b8xAvZV">看诊、出门用</div></div>
+    <span class="qty" data-page-node-id="xxJWkX80FqepRiPiECtUJD">×1</span><span class="price" data-page-node-id="CHDOu1R28PPum6vjGxtPho">¥98</span>
+  </div>
+  <div class="item" data-item="extra_toy" onclick="toggleItem('extra_toy', false)" data-page-node-id="bWRFaHW0DKUlAXjdzIbvWl">
+    <div class="box" data-page-node-id="Y0ZRNWC6h84JZ3cEVKtidk">✓</div>
+    <div class="info" data-page-node-id="76xkgp0nW449DzhgEtV52Z"><div class="name" data-page-node-id="9iKQB38ZRSHLh4rbFZqAC9">额外咬胶玩具</div><div class="note" data-page-node-id="PhJYWyWDBByVsE9hUS3EGj">和尚破坏力强 · 建议多备</div></div>
+    <span class="qty" data-page-node-id="tLW9JhxgHmILAgLBZC9l72">×1</span><span class="price" data-page-node-id="VqBAZRzuBFXGnnWTm6yyu9">¥35</span>
+  </div>
+
+  <div style="height:20px;" data-page-node-id="VCeOKoAjAWxeVOuOOC5XKn"></div>
+</div>
+
+<!-- 结算条 -->
+<div class="checkout" data-page-node-id="762UIZeMitieONzUaIQBWy">
+  <div class="checkout-inner" data-page-node-id="z7tGoFdCvXEc103SoNmIfF">
+    <div data-page-node-id="2YIGnGIDBSsXZyhZo1EXnB">
+      <div class="total-label" data-page-node-id="AO8dhpTDG6eBiZRTlgfFlU">预计总价</div>
+      <div class="total-price" id="total-price" data-page-node-id="XyaptNmG5cXnTEeM8Op7A3">¥3,318</div>
+      <div class="total-count" id="total-count" data-page-node-id="DWj04Sy7K8uxAvSEEeCEXX">共 11 项</div>
+    </div>
+    <div class="spacer" data-page-node-id="JpwyYX26mJIcoNnEEgbabm"></div>
+    <button class="btn btn-ghost" onclick="showSummary()" data-page-node-id="iPqz6YXqNX5wiH5N4HgISi">查看清单</button>
+    <button class="btn btn-primary" onclick="copySummary()" data-page-node-id="EvfpvpQfLLqOQVPyLtrL99">复制报价</button>
+  </div>
+</div>
+
+<!-- 清单弹层 -->
+<div class="modal-mask" id="modal" onclick="if(event.target===this)hideSummary()" data-page-node-id="cNS8ql9dwaomDCMyqRwRq5">
+  <div class="modal" data-page-node-id="2XSDEEjuaUZmC9AvRVB9Xr">
+    <h3 data-page-node-id="t0CuPfRwEwSK0STb5RrTg4">报价明细清单</h3>
+    <ul id="summary-list" data-page-node-id="pMJOihkLYrhDtxmbFMwIv2"></ul>
+    <div class="sum" data-page-node-id="kktxAhHeLZllAUCblKrXAF"><span data-page-node-id="W2SOq4MF6SCAiHfRUnjKpR">合计</span><span id="summary-total" data-page-node-id="pGHVUeDUDJ4vKXDrrzXvw6"></span></div>
+    <div class="foot" data-page-node-id="boAVNcokHE4EqCB9sQFnlf">
+      <button class="btn btn-ghost" onclick="hideSummary()" data-page-node-id="C9reXb6fhqw1krxFh58OI4">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片放大弹层 -->
+<div class="zoom-mask" id="zoom-mask" onclick="hideZoom()">
+  <div class="zoom-box" onclick="event.stopPropagation()">
+    <div class="pholder" id="zoom-img"></div>
+    <div class="zname" id="zoom-name"></div>
+    <div class="ztip" id="zoom-tip"></div>
+  </div>
+</div>
+
+<script>
+  var PRICES = {
+    color:{green:999, yellow:2200, blue:2600},
+    cage:398, perch:48, bowl:36, toy:58, skirt:28,
+    seed:45, grit:22, spray:28,
+    incubator:268, thermo:38, milk:128, feedtool:58,
+    stand_frame:150, transport:98, extra_toy:35,
+    stand_outer:120
+  };
+
+  var state = {
+    plan:'baby',
+    color:'green',
+    stand:'inner',
+    checked:{
+      cage:true, perch:true, bowl:true, toy:true, skirt:true,
+      seed:true, grit:true, spray:true,
+      incubator:true, thermo:true, milk:true, feedtool:true,
+      stand_frame:false, transport:false, extra_toy:false
+    }
+  };
+
+  var NAMES = {
+    cage:'达洋大号不锈钢鸟笼（宽60cm）',
+    perch:'磨砂站杆 ×3',
+    bowl:'食盒 + 水盒（带防溅挡板）×2',
+    toy:'咬胶玩具 + 秋千 ×2',
+    skirt:'防溅裙 + 底网垫料',
+    seed:'混合鸟粮 / 种子粮',
+    grit:'保健砂 + 钙粉',
+    spray:'鸟用清洁喷雾',
+    incubator:'恒温保温箱（风暖带温控）',
+    thermo:'温控器 / 温度计',
+    milk:'鹦鹉专用奶粉（A21 250g）',
+    feedtool:'喂养工具套装',
+    stand_frame:'鸟笼架（落地带脚轮）',
+    transport:'外出 / 运输笼',
+    extra_toy:'额外咬胶玩具'
+  };
+
+  var COLORS = {green:'绿色（普通色）', yellow:'黄化', blue:'蓝化'};
+
+  // 商品图片：每个 item 一个图标(SVG path)或图片URL
+  // 换成真实商品图时，把 img 改成实际图片地址即可
+  var IMAGES = {
+    cage:'<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="16" width="48" height="42" rx="4" stroke="#378ADD" stroke-width="3"/><path d="M8 32h48M20 16v42M44 16v42" stroke="#85B7EB" stroke-width="2"/><circle cx="32" cy="42" r="5" fill="#FAC775"/></svg>',
+    perch:'<svg viewBox="0 0 64 64" fill="none"><path d="M10 40h44" stroke="#BA7517" stroke-width="5" stroke-linecap="round"/><path d="M16 40l-3-10M34 40l0-12M48 40l3-8" stroke="#85B7EB" stroke-width="2" stroke-linecap="round"/></svg>',
+    bowl:'<svg viewBox="0 0 64 64" fill="none"><path d="M14 34a18 10 0 0 0 36 0" stroke="#378ADD" stroke-width="3"/><path d="M14 34h36" stroke="#378ADD" stroke-width="3"/><path d="M20 34v6M44 34v6" stroke="#85B7EB" stroke-width="2"/></svg>',
+    toy:'<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="38" r="12" stroke="#378ADD" stroke-width="3"/><circle cx="26" cy="34" r="2.5" fill="#FAC775"/><circle cx="38" cy="34" r="2.5" fill="#FAC775"/><path d="M32 50v6" stroke="#378ADD" stroke-width="3" stroke-linecap="round"/></svg>',
+    skirt:'<svg viewBox="0 0 64 64" fill="none"><path d="M12 20h40l-6 28H18z" stroke="#378ADD" stroke-width="3" stroke-linejoin="round"/><path d="M18 48h28" stroke="#85B7EB" stroke-width="2"/></svg>',
+    seed:'<svg viewBox="0 0 64 64" fill="none"><rect x="14" y="18" width="36" height="28" rx="4" stroke="#BA7517" stroke-width="3"/><circle cx="26" cy="30" r="3" fill="#FAC775"/><circle cx="38" cy="34" r="3" fill="#FAC775"/><circle cx="32" cy="40" r="3" fill="#FAC775"/></svg>',
+    grit:'<svg viewBox="0 0 64 64" fill="none"><path d="M14 40l12-16 8 10 8-6 8 12z" stroke="#BA7517" stroke-width="3" stroke-linejoin="round"/></svg>',
+    spray:'<svg viewBox="0 0 64 64" fill="none"><rect x="24" y="16" width="16" height="34" rx="6" stroke="#378ADD" stroke-width="3"/><path d="M32 8v8M38 12v8M30 40h4M38 48v4" stroke="#85B7EB" stroke-width="2"/></svg>',
+    incubator:'<svg viewBox="0 0 64 64" fill="none"><rect x="12" y="18" width="40" height="32" rx="5" stroke="#378ADD" stroke-width="3"/><rect x="16" y="24" width="22" height="16" rx="2" fill="#E6F1FB"/><path d="M42 26h6v6h-6M20 46h16" stroke="#FAC775" stroke-width="2"/></svg>',
+    thermo:'<svg viewBox="0 0 64 64" fill="none"><path d="M30 14a6 6 0 0 1 6 6v22a10 10 0 1 1-12 0V20a6 6 0 0 1 6-6z" stroke="#BA7517" stroke-width="3"/><circle cx="30" cy="42" r="4" fill="#FAC775"/></svg>',
+    milk:'<svg viewBox="0 0 64 64" fill="none"><path d="M20 14h24l4 40H16z" stroke="#378ADD" stroke-width="3" stroke-linejoin="round"/><path d="M24 14l4 8h8l4-8" stroke="#378ADD" stroke-width="2" fill="none"/></svg>',
+    feedtool:'<svg viewBox="0 0 64 64" fill="none"><path d="M20 30l18-18a4 4 0 0 1 6 6l-18 18" stroke="#378ADD" stroke-width="3"/><path d="M38 42l12 12M22 34l6-6" stroke="#85B7EB" stroke-width="2"/></svg>',
+    stand_frame:'<svg viewBox="0 0 64 64" fill="none"><path d="M16 48h32M22 48v-6M42 48v-6M22 42h20" stroke="#378ADD" stroke-width="3" stroke-linejoin="round"/><circle cx="18" cy="52" r="3" fill="#85B7EB"/><circle cx="46" cy="52" r="3" fill="#85B7EB"/></svg>',
+    transport:'<svg viewBox="0 0 64 64" fill="none"><rect x="10" y="22" width="44" height="30" rx="6" stroke="#378ADD" stroke-width="3"/><path d="M32 22v-8M32 14h0" stroke="#85B7EB" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="38" r="3" fill="#FAC775"/></svg>',
+    extra_toy:'<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="36" r="14" stroke="#378ADD" stroke-width="3"/><path d="M32 22l-6-8 6 4 6-4z" fill="#FAC775"/><circle cx="27" cy="34" r="2.5" fill="#378ADD"/><circle cx="37" cy="34" r="2.5" fill="#378ADD"/></svg>'
+  };
+
+  // 颜色对应的鹦鹉图标
+  var COLOR_ICON = {
+    green:'#639922', yellow:'#FAC775', blue:'#378ADD'
+  };
+
+  // 自动给每个商品项注入缩略图
+  function injectThumbs(){
+    document.querySelectorAll('.item[data-item]').forEach(function(el){
+      var key = el.getAttribute('data-item');
+      var thumb = document.createElement('div');
+      thumb.className = 'thumb';
+      thumb.innerHTML = IMAGES[key] || '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="16" fill="#E6F1FB"/></svg>';
+      thumb.onclick = function(e){ e.stopPropagation(); zoomItem(key); };
+      el.insertBefore(thumb, el.firstChild);
+    });
+    // 色系选择卡片也加鹦鹉缩略图
+    document.querySelectorAll('#color-group .radio-chip').forEach(function(chip){
+      var c = chip.getAttribute('data-color');
+      var ic = document.createElement('span');
+      ic.className = 'cicon';
+      ic.innerHTML = '<svg viewBox="0 0 64 64" width="34" height="34"><circle cx="32" cy="28" r="12" fill="'+COLOR_ICON[c]+'"/><path d="M24 40l-3 8 5-3 6 3-3-8M32 16l2 8-2 4-2-4z" fill="'+COLOR_ICON[c]+'"/><circle cx="28" cy="27" r="2" fill="#fff"/></svg>';
+      chip.insertBefore(ic, chip.firstChild);
+    });
+  }
+
+  function zoomItem(key){
+    var name = NAMES[key] || key;
+    var img = IMAGES[key];
+    var box = document.getElementById('zoom-img');
+    if(img && img.indexOf('<img')===0){
+      box.innerHTML = img;
+    } else {
+      box.innerHTML = '<div class="pholder">'+(img||'')+'</div>';
+    }
+    document.getElementById('zoom-name').textContent = name;
+    document.getElementById('zoom-tip').textContent = '提示：这是占位图，可替换成实际商品图';
+    document.getElementById('zoom-mask').classList.add('show');
+  }
+
+  function hideZoom(){
+    document.getElementById('zoom-mask').classList.remove('show');
+  }
+
+  function selectPlan(p){
+    state.plan = p;
+    document.querySelectorAll('.plan').forEach(function(el){
+      el.classList.toggle('active', el.dataset.plan===p);
+    });
+    document.getElementById('baby-section').style.display = (p==='baby') ? 'block' : 'none';
+    render();
+  }
+
+  function selectColor(c){
+    state.color = c;
+    document.querySelectorAll('#color-group .radio-chip').forEach(function(el){
+      el.classList.toggle('active', el.dataset.color===c);
+    });
+    render();
+  }
+
+  function selectStand(s){
+    state.stand = s;
+    document.querySelectorAll('#stand-group .radio-chip').forEach(function(el){
+      el.classList.toggle('active', el.dataset.stand===s);
+    });
+    render();
+  }
+
+  function toggleItem(key, forced){
+    if(forced !== undefined){
+      state.checked[key] = !state.checked[key];
+    } else {
+      state.checked[key] = !state.checked[key];
+    }
+    document.querySelectorAll('.item[data-item="'+key+'"]').forEach(function(el){
+      el.classList.toggle('checked', state.checked[key]);
+    });
+    render();
+  }
+
+  function getLines(){
+    var lines = [];
+    var birdTotal = PRICES.color[state.color] * 2;
+    lines.push({name:'和尚鹦鹉 ×2 · '+COLORS[state.color]+'（带合法标识）', price:birdTotal});
+
+    ['cage','perch','bowl','toy','skirt','seed','grit','spray','incubator','thermo','milk','feedtool','stand_frame','transport','extra_toy'].forEach(function(k){
+      if(k==='incubator'||k==='thermo'||k==='milk'||k==='feedtool'){
+        if(state.plan!=='baby') return;
+      }
+      if(state.checked[k]){
+        lines.push({name:NAMES[k], price:PRICES[k]});
+      }
+    });
+
+    if(state.stand==='outer'){
+      lines.push({name:'独立落地站架', price:PRICES.stand_outer});
+    }
+    return lines;
+  }
+
+  function render(){
+    var lines = getLines();
+    var total = lines.reduce(function(s,l){return s+l.price;}, 0);
+    document.getElementById('total-price').textContent = '¥' + total.toLocaleString('zh-CN');
+    document.getElementById('total-count').textContent = '共 ' + lines.length + ' 项';
+    document.getElementById('plan-baby-price').textContent = '¥' + (total - PRICES.color[state.color]*2 + 999*2).toLocaleString('zh-CN') + ' 起';
+  }
+
+  function showSummary(){
+    var lines = getLines();
+    var total = lines.reduce(function(s,l){return s+l.price;}, 0);
+    var html = '';
+    lines.forEach(function(l){
+      html += '<li><span>'+l.name+'</span><span>¥'+l.price.toLocaleString('zh-CN')+'</span></li>';
+    });
+    document.getElementById('summary-list').innerHTML = html;
+    document.getElementById('summary-total').textContent = '¥' + total.toLocaleString('zh-CN');
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function hideSummary(){
+    document.getElementById('modal').classList.remove('show');
+  }
+
+  function copySummary(){
+    var lines = getLines();
+    var total = lines.reduce(function(s,l){return s+l.price;}, 0);
+    var text = '羽栖 · 和尚鹦鹉饲养套装报价单\n';
+    text += '================================\n';
+    lines.forEach(function(l){
+      text += l.name + '  ¥' + l.price.toLocaleString('zh-CN') + '\n';
+    });
+    text += '--------------------------------\n';
+    text += '合计：¥' + total.toLocaleString('zh-CN') + '\n';
+    text += '（两只和尚鹦鹉 · 带合法标识 · 好打理精选）';
+    navigator.clipboard.writeText(text).then(function(){
+      alert('报价已复制到剪贴板');
+    });
+  }
+
+  injectThumbs();
+  render();
+</script>
+</body>
+</html>

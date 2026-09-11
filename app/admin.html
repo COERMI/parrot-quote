@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台 · 提交清单查看</title>
+<style>
+  :root{
+    --bg:#F3F9FD; --card:#fff; --primary:#378ADD; --accent:#FAC775; --accent-deep:#BA7517;
+    --text:#0C447C; --muted:#5F7590; --price:#E8875A; --border:#DCE8F2; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px 14px 60px;}
+  .wrap{max-width:820px;margin:0 auto;}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+  .top h1{font-size:20px;font-weight:700;}
+  .top .meta{font-size:12px;color:var(--muted);}
+  .refresh-btn{border:1px solid var(--primary);background:transparent;color:var(--primary);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-weight:600;}
+  .refresh-btn:active{background:var(--primary);color:#fff;}
+  .auto-tip{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .empty{background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--muted);font-size:14px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .card-head .who{font-size:16px;font-weight:700;}
+  .card-head .time{font-size:12px;color:var(--muted);}
+  .card-head .total{font-size:20px;font-weight:700;color:var(--price);}
+  .note{font-size:13px;color:var(--muted);margin-bottom:8px;}
+  .remark{font-size:13px;background:#FFFDF6;border:1px solid #F4D28A;border-radius:10px;padding:8px 12px;margin-bottom:10px;}
+  .remark .rl{font-weight:600;color:var(--accent-deep);}
+  .group{margin-bottom:8px;}
+  .g-title{font-size:13px;font-weight:600;color:var(--primary);margin-bottom:2px;}
+  .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:1px 0;}
+  .row .nm{color:var(--text);}
+  .row .pr{color:var(--muted);white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>📥 提交清单后台</h1>
+      <div class="meta" id="meta"></div>
+    </div>
+    <button class="refresh-btn" onclick="load()">🔄 刷新</button>
+  </div>
+  <div class="auto-tip">页面每 15 秒自动刷新,无需手动操作。</div>
+  <div id="list"></div>
+</div>
+<script>
+// 从当前 URL 读取 key 参数,用于访问受保护接口
+var KEY = (location.search.match(/[?&]key=([^&]+)/) || [])[1] || '';
+function load(){
+  fetch('/api/submissions?key='+encodeURIComponent(KEY)).then(function(r){
+    if(r.status === 401){
+      document.getElementById('list').innerHTML = '<div class="empty">未授权。请在网址后加 <b>?key=密码</b> 后访问。</div>';
+      document.getElementById('meta').textContent = '';
+      throw new Error('unauthorized');
+    }
+    return r.json();
+  }).then(function(list){
+    list = list || [];
+    // 按时间倒序(最新在前)
+    list.sort(function(a,b){ return (b.submittedAt||'').localeCompare(a.submittedAt||''); });
+    var el = document.getElementById('list');
+    document.getElementById('meta').textContent = '共 '+list.length+' 条提交';
+    if(list.length === 0){
+      el.innerHTML = '<div class="empty">还没有人提交清单,等朋友提交后这里会自动显示。</div>';
+      return;
+    }
+    var html = '';
+    list.forEach(function(s){
+      html += '<div class="card">';
+      html += '<div class="card-head">';
+      html += '<span class="who">'+esc(s.name||'匿名')+'</span>';
+      html += '<span class="time">'+esc(s.submittedAt||'')+'</span>';
+      html += '<span class="total">合计 ¥'+(s.total||0).toLocaleString('zh-CN')+'</span>';
+      html += '</div>';
+      if(s.note) html += '<div class="note">💬 留言:'+esc(s.note)+'</div>';
+      if(s.remark) html += '<div class="remark"><div class="rl">📝 特别需求备注</div>'+esc(s.remark)+'</div>';
+      (s.groups||[]).forEach(function(g){
+        if(!g.rows || g.rows.length===0) return;
+        html += '<div class="group"><div class="g-title">'+esc(g.title)+'</div>';
+        g.rows.forEach(function(r){
+          html += '<div class="row"><span class="nm">'+esc(r.name)+'</span><span class="pr">¥'+(r.price||0).toLocaleString('zh-CN')+'</span></div>';
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    el.innerHTML = html;
+  }).catch(function(){
+    document.getElementById('list').innerHTML = '<div class="empty">加载失败。如果你是通过 /admin 打开的,请确认网址里带了 ?key=密码。</div>';
+  });
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>
