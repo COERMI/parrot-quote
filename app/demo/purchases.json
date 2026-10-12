@@ -1,0 +1,119 @@
+{
+ "ver": 3,
+ "items": {
+  "d3m0a1b2c3|0|0": {
+   "label": null,
+   "checked": true,
+   "actual": 620,
+   "source": ["d3m0a1b2c3|0|0"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "d3m0a1b2c3|0|1": {
+   "label": null,
+   "checked": true,
+   "actual": 438,
+   "source": ["d3m0a1b2c3|0|1"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "d3m0a1b2c3|1|0": {
+   "label": null,
+   "checked": true,
+   "actual": 45,
+   "source": ["d3m0a1b2c3|1|0"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "d3m0a1b2c3|1|1": {
+   "label": null,
+   "checked": true,
+   "actual": 78,
+   "source": ["d3m0a1b2c3|1|1"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "d3m0c3d4e5|0|0": {
+   "label": null,
+   "checked": true,
+   "actual": 620,
+   "source": ["d3m0c3d4e5|0|0"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "d3m0c3d4e5|0|1": {
+   "label": null,
+   "checked": true,
+   "actual": 438,
+   "source": ["d3m0c3d4e5|0|1"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "m_demo_clean": {
+   "label": "无纺布清洁垫纸(合并)",
+   "checked": true,
+   "actual": 28,
+   "source": ["d3m0c3d4e5|2|1", "d3m0c3d4e5|2|2"],
+   "gift": false,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "g_demo_1": {
+   "label": "赠 · 藤编鸟窝",
+   "checked": true,
+   "actual": 45,
+   "source": [],
+   "gift": true,
+   "qty": 1,
+   "quoted": null,
+   "sub": "d3m0a1b2c3"
+  },
+  "g_demo_2": {
+   "label": "赠 · 接粪盘薄膜",
+   "checked": true,
+   "actual": 18,
+   "source": [],
+   "gift": true,
+   "qty": 1,
+   "quoted": null,
+   "sub": null
+  },
+  "g_demo_3": {
+   "label": "加 · 防溅外出盒",
+   "checked": true,
+   "actual": 138,
+   "source": [],
+   "gift": false,
+   "qty": 1,
+   "quoted": 150,
+   "sub": "d3m0b2c3d4"
+  }
+ },
+ "subs": {
+  "d3m0a1b2c3": {
+   "paid": 2200,
+   "adj": null,
+   "done": true,
+   "doneAt": "2026-09-16 15:20:00"
+  },
+  "d3m0c3d4e5": {
+   "paid": 2180,
+   "adj": null,
+   "done": true,
+   "doneAt": "2026-09-17 11:08:00"
+  }
+ }
+}

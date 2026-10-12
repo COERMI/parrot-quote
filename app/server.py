@@ -29,6 +29,16 @@ PURCHASE_LOCK = threading.Lock()
 # 未设置时默认 admin 密码为 123456，建议通过 ADMIN_KEY 环境变量自定义
 ADMIN_KEY = os.environ.get("ADMIN_KEY", "123456")
 
+# 演示模式：DEMO=1 时把数据文件指向 demo/ 下的样例数据，不碰真实的提交记录
+# 与采购记录。用途是把仓库 clone 下来、手上还没有自己的数据时，也能直接
+# 打开后台看到完整效果。
+# 注意：演示模式下在后台点的勾选/改价会写进 demo/purchases.json，
+#       想恢复成仓库里的原样，执行 `git checkout app/demo` 即可。
+DEMO = os.environ.get("DEMO") == "1"
+if DEMO:
+    SUBMISSIONS_FILE = os.path.join(BASE, "demo", "submissions.jsonl")
+    PURCHASES_FILE = os.path.join(BASE, "demo", "purchases.json")
+
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(STATIC_DIR, exist_ok=True)
 
@@ -525,6 +535,8 @@ def main():
 
     print("=" * 50)
     print("羽栖 · 可编辑报价器 已启动")
+    if DEMO:
+        print("⚠ 演示模式:数据取自 demo/(样例数据,可随意点着玩)")
     print("本机访问: %s://localhost:%d" % (proto, port))
     print("手机访问: 同一WiFi下，用电脑IP + 端口 %d" % port)
     print("按 Ctrl+C 停止")
