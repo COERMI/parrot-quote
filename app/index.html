@@ -522,8 +522,25 @@ function changeBirdQty(birdId, delta){
   if(next < 0) next = 0;
   if(next > max) next = max;
   state.birdQty[birdId] = next;
-  // 局部刷新:只重绘鹦鹉区块 + 更新总价,避免整页重载导致滚动/焦点丢失
-  renderBirds();
+  // 纯 DOM 局部更新:只改数字/小计/高亮,不重建任何元素(避免图片重新加载)
+  var numEl = document.getElementById('qty-num-' + birdId);
+  if(numEl) numEl.textContent = next;
+  var b = (DATA.birds||[]).find(function(x){return x.id===birdId;});
+  var subEl = document.getElementById('qty-sub-' + birdId);
+  if(subEl){
+    if(next > 0){
+      subEl.textContent = '小计 ¥' + fmt(b.price * next);
+      subEl.style.display = '';
+    } else {
+      subEl.textContent = '';
+      subEl.style.display = 'none';
+    }
+  }
+  var chipEl = document.getElementById('bird-chip-' + birdId);
+  if(chipEl){
+    if(next > 0) chipEl.classList.add('active');
+    else chipEl.classList.remove('active');
+  }
   updateTotal();
 }
 
@@ -532,16 +549,16 @@ function renderBirds(){
   (DATA.birds||[]).forEach(function(b){
     var q = state.birdQty[b.id] || 0;
     var bimg = b.img ? '<img src="'+b.img+'" loading="lazy">' : '<span class="ph">暂无<br>图片</span>';
-    birdHtml += '<div class="bird-chip '+(q>0?'active':'')+'">'
+    birdHtml += '<div class="bird-chip '+(q>0?'active':'')+'" id="bird-chip-'+b.id+'">'
       + '<div class="bthumb" onclick="zoomBirdImg(\''+b.id+'\')">'+bimg+'</div>'
       + '<div class="binfo"><div class="bname">'+b.name+'</div><div class="bnote">'+(b.note||'')+'</div>'
       + '<div class="bqty-row">'
       + '<button type="button" class="qty-btn" onclick="changeBirdQty(\''+b.id+'\',-1)">−</button>'
-      + '<span class="qty-num">'+q+'</span>'
+      + '<span class="qty-num" id="qty-num-'+b.id+'">'+q+'</span>'
       + '<button type="button" class="qty-btn" onclick="changeBirdQty(\''+b.id+'\',1)">+</button>'
       + '</div></div>'
       + '<div class="bprice-col"><span class="bprice">¥'+fmt(b.price)+'/'+b.unit+'</span>'
-      + (q>0 ? '<span class="bsub">小计 ¥'+fmt(b.price*q)+'</span>' : '')
+      + '<span class="bsub" id="qty-sub-'+b.id+'" style="'+(q>0?'':'display:none;')+'">'+(q>0?'小计 ¥'+fmt(b.price*q):'')+'</span>'
       + '<button type="button" class="edit-btn" onclick="event.stopPropagation();editBirdImg(\''+b.id+'\')">换图</button>'
       + '</div></div>';
   });

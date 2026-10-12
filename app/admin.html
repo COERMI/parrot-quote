@@ -3,96 +3,1719 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>后台 · 提交清单查看</title>
+<title>后台 · 提交清单与采购管理</title>
 <style>
   :root{
     --bg:#F3F9FD; --card:#fff; --primary:#378ADD; --accent:#FAC775; --accent-deep:#BA7517;
     --text:#0C447C; --muted:#5F7590; --price:#E8875A; --border:#DCE8F2; --radius:14px;
+    --ok:#1E8E5A; --over:#D9534F; --warn:#C2410C;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px 14px 60px;}
-  .wrap{max-width:820px;margin:0 auto;}
-  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
-  .top h1{font-size:20px;font-weight:700;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:16px 12px 60px;}
+  .wrap{max-width:860px;margin:0 auto;}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px;}
+  .top h1{font-size:19px;font-weight:700;}
   .top .meta{font-size:12px;color:var(--muted);}
   .refresh-btn{border:1px solid var(--primary);background:transparent;color:var(--primary);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-weight:600;}
   .refresh-btn:active{background:var(--primary);color:#fff;}
-  .auto-tip{font-size:12px;color:var(--muted);margin-bottom:14px;}
   .empty{background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--muted);font-size:14px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
-  .card-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+  /* ===== 采购汇总条 ===== */
+  /* 不再 sticky —— 顶部粘住的位置留给「工具条」(视图切换/搜索/筛选) */
+  .buybar{background:linear-gradient(180deg,#fff 70%,#FBFDFF);border:1px solid var(--border);
+    border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;box-shadow:0 4px 16px rgba(12,68,124,.07);}
+  .buybar .bt{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .buybar .bt h2{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
+  .bt-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;}
+  .stat .k{font-size:11px;color:var(--muted);}
+  .stat .v{font-size:17px;font-weight:700;line-height:1.25;}
+  .stat .v.money{color:var(--price);}
+  .stat .v.ok{color:var(--ok);}
+  .stat .v.over{color:var(--over);}
+  .bar{height:6px;background:#E7F0F8;border-radius:99px;overflow:hidden;margin-top:10px;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#6DB3F2);border-radius:99px;transition:width .25s;}
+  .btn{border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:active{background:#2C74BE;}
+  .btn-ghost{background:transparent;color:var(--primary);border:1px solid var(--primary);}
+  .btn-gift{background:#FFF6E4;color:var(--accent-deep);border:1px dashed var(--accent);}
+  .btn-gift:active{background:var(--accent);color:#fff;}
+  .note-mode{font-size:11.5px;color:var(--muted);margin-top:6px;}
+
+  /* ===== 视图工具条(订单 / 赠品 切换 + 搜索 + 筛选) ===== */
+  .toolbar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:9px 11px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;
+    position:sticky;top:0;z-index:45;box-shadow:0 3px 12px rgba(12,68,124,.05);}
+  .tb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  /* 视图切换:订单 / 赠品,做成胶囊分段控件 */
+  .viewtabs{display:flex;gap:3px;background:#EDF5FB;border-radius:10px;padding:3px;flex:none;}
+  .vtab{border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:600;
+    padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+  .vtab b{font-weight:700;opacity:.7;}
+  .vtab.on{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(12,68,124,.13);}
+  .vtab.on b{opacity:1;}
+  .vtab.gft.on{color:var(--accent-deep);}
+  .search{flex:1 1 130px;min-width:0;font-family:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--border);
+    border-radius:9px;color:var(--text);background:#fff;}
+  .search:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(55,138,221,.15);}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0;}
+  .chip{border:1px solid var(--border);background:#fff;color:var(--muted);font-family:inherit;font-size:12px;
+    padding:4px 11px;border-radius:99px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+  .chip b{font-weight:700;}
+  .chip.on{border-color:var(--primary);background:#EAF3FB;color:var(--primary);font-weight:600;}
+  .chip.on.gft{border-color:var(--accent);background:#FFF6E4;color:var(--accent-deep);}
+  .foldall{flex:none;}
+
+  /* ===== 提交卡片 ===== */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;}
+  .card.done{border-color:#BFE3CE;background:linear-gradient(180deg,#FBFEFC,#fff);}
+  .card.giftcard{border:1px dashed var(--accent);background:linear-gradient(180deg,#FFFCF5,#fff);}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
   .card-head .who{font-size:16px;font-weight:700;}
   .card-head .time{font-size:12px;color:var(--muted);}
-  .card-head .total{font-size:20px;font-weight:700;color:var(--price);}
+  .card-head .total{font-size:19px;font-weight:700;color:var(--price);}
+  /* 卡片头分左右两组:左边「谁 + 状态」,右边「时间 + 金额 + 折叠」,避免中间被撑散 */
+  .ch-left,.ch-right{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0;}
+  .ch-right{margin-left:auto;align-items:center;}
+  .badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;background:#EAF3FB;color:var(--primary);white-space:nowrap;}
+  .badge.all{background:#E4F5EB;color:var(--ok);}
   .note{font-size:13px;color:var(--muted);margin-bottom:8px;}
   .remark{font-size:13px;background:#FFFDF6;border:1px solid #F4D28A;border-radius:10px;padding:8px 12px;margin-bottom:10px;}
   .remark .rl{font-weight:600;color:var(--accent-deep);}
-  .group{margin-bottom:8px;}
-  .g-title{font-size:13px;font-weight:600;color:var(--primary);margin-bottom:2px;}
-  .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:1px 0;}
-  .row .nm{color:var(--text);}
-  .row .pr{color:var(--muted);white-space:nowrap;}
+  .ghint{font-size:12.5px;color:var(--accent-deep);background:#FFF9EC;border-radius:9px;padding:7px 11px;margin-bottom:8px;}
+  .group{margin-bottom:10px;}
+  .g-title{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+  .g-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;}
+
+  /* ===== 卡片折叠(单子多了能一眼扫完) =====
+     明细 DOM 照常渲染、只是隐藏 —— 这样勾选/改价那些局部更新逻辑都不用改 */
+  .card.collapsed .fold{display:none;}
+  .card.collapsed{padding-bottom:12px;}
+  .fold-btn{border:1px solid var(--border);background:#fff;border-radius:7px;padding:2px 9px;font-size:11.5px;
+    color:var(--muted);cursor:pointer;flex:none;font-family:inherit;}
+  .fold-btn:active{background:#EEF6FC;}
+  /* 卡片头里的「有赠品」小旗 —— 用独立类名,免得被 applySettleUI 的 .badge 覆盖 */
+  .card-head .gflag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;
+    background:#FDF0D8;color:var(--accent-deep);white-space:nowrap;}
+  /* 订单视图底部:还有未归属额外项时,给一条跳去赠品视图的提示 */
+  .orphanbar{display:block;width:100%;text-align:center;background:#FFF9EC;border:1px dashed var(--accent);
+    border-radius:var(--radius);padding:12px;font-size:12.5px;color:var(--accent-deep);cursor:pointer;
+    margin-bottom:12px;font-family:inherit;}
+  .orphanbar b{font-weight:700;}
+  .orphanbar:active{background:#FFF3DC;}
+
+  /* ===== 赠品 / 额外项视图 ===== */
+  .gcard{margin-bottom:12px;}
+  .gcard.orphan{border:1px dashed var(--accent);background:linear-gradient(180deg,#FFFCF5,#fff);}
+  .gcard .card-head .who{font-size:14.5px;}
+  .gcard .gnum{font-size:12.5px;font-weight:700;color:var(--accent-deep);}
+  .prow .gsel{flex:none;font-family:inherit;font-size:12px;padding:3px 7px;border:1px dashed var(--accent);
+    border-radius:7px;background:#FFFCF4;color:var(--accent-deep);cursor:pointer;}
+  .prow .gsel:focus{outline:none;border-style:solid;}
+  .gtip{font-size:12px;color:var(--accent-deep);background:#FFF9EC;border-radius:9px;padding:7px 11px;margin-bottom:8px;}
+
+  /* ===== 交易完成(整单结算后的视觉状态) ===== */
+  /* 卡片:淡青绿底 + 左侧绿条,和未完成的蓝白卡片一眼区分 */
+  .card.settled{border-color:#9FD8BA;background:linear-gradient(180deg,#F2FBF6,#fff 62%);
+    box-shadow:inset 4px 0 0 #2FA96B,0 2px 12px rgba(30,142,90,.09);}
+  .card.settled .card-head{border-bottom-color:#CFEBDB;}
+  .badge.settled{background:linear-gradient(135deg,#1E8E5A,#2FA96B);color:#fff;}
+  /* 印章带:一枚盖上去的圆章 + 结算摘要 */
+  .doneband{display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+    background:linear-gradient(135deg,#EAF8F0,#F8FEFB);border:1px dashed #86CBA6;
+    border-radius:12px;padding:9px 12px;margin-bottom:10px;}
+  .doneband .db-txt{flex:1;min-width:120px;font-size:12.5px;color:#1B6B47;font-weight:600;}
+  .doneband .db-txt em{font-style:normal;font-weight:400;color:#4E8A6C;}
+  .doneband .db-warn{flex:none;font-size:11.5px;color:var(--warn);background:#FFF6E4;
+    border:1px dashed var(--accent);border-radius:8px;padding:3px 9px;}
+  /* 圆章:双层描边 + 轻微旋转,模拟盖上去的戳 */
+  .stamp{flex:none;width:50px;height:50px;border-radius:50%;color:#1E8E5A;background:rgba(255,255,255,.78);
+    border:2px solid #1E8E5A;display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:11.5px;font-weight:800;line-height:1.12;letter-spacing:.5px;transform:rotate(-9deg);
+    box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px rgba(30,142,90,.5);}
+  /* 顶部「已结算 x/y 单」指示 */
+  .stat .v.settled{color:var(--ok);}
+
+  /* ===== 客户结算条 ===== */
+  .paybar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#F7FBFE;border:1px solid var(--border);
+    border-radius:10px;padding:7px 10px;margin-bottom:10px;font-size:12.5px;color:var(--muted);}
+  .paybar .mini.settle{color:var(--ok);border-color:#A9DCC0;}
+  .paybar .mini.settle:active{background:#EAF8F0;}
+  .paybar .pbl{font-weight:600;color:var(--text);font-size:12.5px;}
+  .paybar input.paid{width:88px;font-family:inherit;font-size:13px;padding:4px 7px;border:1px solid var(--border);
+    border-radius:7px;text-align:right;color:var(--text);background:#fff;flex:none;}
+  .paybar input.paid:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(55,138,221,.15);}
+  .paybar .pdiff{font-size:12px;color:var(--muted);min-width:0;}
+  .pdiff b{color:var(--text);}
+  .pdiff b.warm{color:var(--accent-deep);}
+  .pdiff b.ok{color:var(--ok);}
+  .pdiff b.over{color:var(--over);}
+  .paybar .paybtns{margin-left:auto;display:flex;gap:6px;flex:none;}
+
+  /* ===== 采购明细行 ===== */
+  .prow{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:8px;flex-wrap:wrap;transition:background .15s;}
+  .prow:hover{background:#F7FBFE;}
+  .prow.on{background:#F2FAF5;}
+  .prow.merged{background:#F4F8FE;}
+  .prow.gift{background:#FFFBF2;}
+  .prow .chk{width:17px;height:17px;flex:none;accent-color:var(--ok);cursor:pointer;}
+  .prow .nm{flex:1;min-width:130px;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .prow .nmt{word-break:break-all;}
+  .prow.merged .nmt{font-weight:700;}
+  /* 报价 + 实际价 打包成一块:窄屏时整块换行,不会把两者拆散 */
+  .prow .meta{display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:0;}
+  .prow .pr{font-size:12px;color:var(--muted);white-space:nowrap;}
+  .prow .ipw{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);white-space:nowrap;}
+  .prow .ip{width:82px;font-size:13px;padding:4px 6px;border:1px solid var(--border);border-radius:7px;text-align:right;
+    font-family:inherit;color:var(--text);background:#fff;}
+  .prow .ip:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(55,138,221,.15);}
+  .prow .ip.filled{border-color:var(--accent-deep);background:#FFFCF4;font-weight:600;}
+  .mini{border:1px solid var(--border);background:#fff;border-radius:7px;padding:2px 7px;font-size:12px;cursor:pointer;line-height:1.5;flex:none;}
+  .mini:active{background:#EEF6FC;}
+  .tag{font-style:normal;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;flex:none;}
+  .tag-merge{background:#E3EFFB;color:var(--primary);}
+  .tag-gift{background:#FDF0D8;color:var(--accent-deep);}
+  .tag-extra{background:#E4F5EB;color:var(--ok);}
+  .src-toggle{font-size:11px;color:var(--primary);cursor:pointer;border-bottom:1px dashed var(--primary);flex:none;user-select:none;}
+  .src-list{font-size:11.5px;color:var(--muted);padding:2px 6px 6px 31px;display:none;}
+  .src-list.show{display:block;}
+  .src-list em{font-style:normal;color:var(--price);}
+  .addgift{margin-top:8px;width:100%;padding:7px;font-size:12.5px;}
+
+  /* ===== 弹窗通用 ===== */
+  .mask{display:none;position:fixed;inset:0;background:rgba(12,40,70,.45);z-index:200;padding:16px;overflow:auto;}
+  .mask.show{display:block;}
+  .modal{background:#fff;border-radius:16px;max-width:560px;margin:24px auto;padding:18px;}
+  .modal h3{font-size:17px;margin-bottom:4px;}
+  .modal .sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;}
+  .modal-actions .btn{flex:1;padding:9px 6px;font-size:12.5px;}
+
+  /* ===== 合并 / 赠送表单 ===== */
+  .mg-list{max-height:38vh;overflow:auto;border:1px solid var(--border);border-radius:10px;padding:4px;}
+  .mgrow{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:13px;}
+  .mgrow:hover{background:#F7FBFE;}
+  .mgrow.on{background:#EEF6FC;}
+  .mgrow input{width:16px;height:16px;accent-color:var(--primary);flex:none;}
+  .mgrow .mgname{flex:1;word-break:break-all;}
+  .mgrow .mgq{font-size:12px;color:var(--price);white-space:nowrap;}
+  .mg-form{margin-top:12px;display:flex;flex-direction:column;gap:9px;}
+  .mg-form .fld{display:flex;align-items:center;gap:9px;font-size:13px;}
+  .mg-form .fld>span{width:78px;flex:none;color:var(--muted);font-size:12.5px;}
+  .mg-form .fld input{flex:1;min-width:0;font-family:inherit;font-size:13.5px;padding:7px 10px;border:1px solid var(--border);border-radius:9px;color:var(--text);}
+  .mg-form .fld select{flex:1;min-width:0;font-family:inherit;font-size:13.5px;padding:7px 10px;border:1px solid var(--border);border-radius:9px;color:var(--text);background:#fff;}
+  .mg-form .fld input:focus,.mg-form .fld select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(55,138,221,.15);}
+  .mg-form .fld input.qty{flex:none;width:74px;text-align:center;}
+  .mg-sum{margin-top:11px;font-size:12.5px;color:var(--muted);background:#F7FBFE;border-radius:9px;padding:8px 11px;}
+  .mg-sum b{color:var(--price);font-size:14px;}
+
+  /* ===== 采购账单(自有成本口径) ===== */
+  .plist{border-top:1px solid var(--border);}
+  .psec{font-size:12px;font-weight:700;color:var(--primary);padding:9px 0 3px;}
+  .pitem{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed #EAF1F7;font-size:13px;}
+  .pitem .n{flex:1;}
+  .pitem .q{font-size:12px;color:var(--muted);width:44px;text-align:center;white-space:nowrap;}
+  .pitem .m{width:84px;text-align:right;font-weight:600;color:var(--price);white-space:nowrap;}
+  .pitem.g .m{color:var(--accent-deep);}
+  .pitem.g .n::before{content:'🎁 ';font-size:11px;}
+  .ptotal{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:10px;border-top:2px solid var(--primary);}
+  .ptotal .lbl{font-size:14px;font-weight:600;}
+  .ptotal .amt{font-size:22px;font-weight:700;color:var(--price);}
+  .pcmp{font-size:12px;color:var(--muted);text-align:right;margin-top:2px;}
+
+  /* ===== 给客户的清单 ===== */
+  .ckwrap{border-top:1px solid var(--border);}
+  .ckhead{font-size:15px;font-weight:700;padding:10px 0 2px;}
+  .ckmeta{font-size:11.5px;color:var(--muted);margin-bottom:4px;}
+  .ckrow{display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px dashed #EAF1F7;font-size:13px;}
+  .ckrow .cn{flex:1;}
+  .ckrow .cq{font-size:12px;color:var(--muted);white-space:nowrap;}
+  .ckrow .cm{width:84px;text-align:right;font-weight:600;color:var(--price);white-space:nowrap;}
+  .ckrow.free .cm{color:var(--accent-deep);font-weight:600;}
+  .ckempty{font-size:13px;color:var(--muted);background:#F7FBFE;border-radius:9px;padding:14px;text-align:center;margin:8px 0;}
+  .cksum{margin-top:14px;padding-top:10px;border-top:2px solid var(--primary);}
+  .ckline{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:3px 0;color:var(--muted);gap:10px;}
+  .ckline b{color:var(--text);font-size:14px;white-space:nowrap;}
+  .ckline.adj b{color:var(--accent-deep);}
+  .ckline.total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;}
+  .ckline.total span{font-size:14px;font-weight:600;color:var(--text);}
+  .ckline.total b{font-size:22px;color:var(--price);}
+  .ckline input.paid{width:90px;flex:none;font-family:inherit;font-size:13.5px;padding:5px 8px;border:1px solid var(--border);border-radius:8px;text-align:right;color:var(--text);}
+  .ckline input.paid:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(55,138,221,.15);}
+  .ckhint{font-size:12px;color:var(--muted);margin-top:8px;background:#F7FBFE;border-radius:9px;padding:8px 11px;}
+  /* 客户清单底部的「已结清」章 —— 单据的落款感 */
+  .ckstamp{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:1px dashed #CFEBDB;}
+  .ckstamp .stamp{width:58px;height:58px;font-size:12.5px;}
+  .ckstamp .cks-text{font-size:12.5px;color:#1B6B47;font-weight:600;}
+  .ckstamp .cks-text em{font-style:normal;font-weight:400;color:#4E8A6C;display:block;font-size:11.5px;}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:rgba(12,68,124,.92);color:#fff;
+    padding:9px 20px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:all .25s;z-index:300;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:560px){
+    .toolbar{padding:8px 9px;gap:7px;}
+    .viewtabs{flex:1 1 100%;}
+    .vtab{flex:1;padding:6px 8px;font-size:12px;}
+    .search{flex:1 1 100%;padding:6px 10px;}
+    .chips{gap:5px;}
+    .chip{padding:3px 9px;font-size:11.5px;}
+    .foldall{padding:3px 10px;font-size:11.5px;}
+    .prow .gsel{order:3;flex:1 1 100%;margin-left:25px;}
+    .buybar .bt h2{font-size:13px;}
+    .bt-actions{width:100%;}
+    .bt-actions .btn{flex:1;padding:8px 8px;font-size:12.5px;}
+    .stats{gap:12px;}
+    .stat{min-width:calc(50% - 6px);}
+    .stat .v{font-size:15px;}
+    /* 窄屏两行:第 1 行「勾选 + 名称 + 操作」,第 2 行「报价 + 实际价」。
+       .meta 用 flex-basis:100% 强制换行并占满整行,所以不会横向溢出屏幕。
+       注意 nm 不能设 min-width:100% —— 勾选框的宽度会把整行顶出屏幕。 */
+    .prow{gap:4px 8px;}
+    .prow .nm{flex:1 1 auto;min-width:0;font-size:12.5px;}
+    .prow .mini{order:1;margin-left:auto;}   /* 排到 meta 之前,才不会独占一行 */
+    .prow .meta{order:2;flex:1 1 100%;padding-left:25px;margin-top:1px;}
+    .prow .ipw{margin-left:auto;}
+    .prow .pr{font-size:11.5px;}
+    .src-list{padding-left:25px;}
+    .paybar{gap:6px 8px;}
+    /* 窄屏:第 1 行「标签 + 输入框 + 两个按钮」,第 2 行「结算详情」 */
+    .paybar .pbl{order:1;}
+    .paybar input.paid{order:2;}
+    .paybar .paybtns{order:3;margin-left:auto;}
+    .paybar .pdiff{order:4;flex:1 1 100%;font-size:11.5px;}
+    .modal{margin:12px auto;padding:15px;}
+    .mg-form .fld{flex-wrap:wrap;}
+    .mg-form .fld>span{width:auto;}
+  }
+  @media print{
+    body{background:#fff;padding:0;}
+    .top,.buybar,#list,.toast{display:none !important;}
+    /* 打印时只输出当前打开的那个弹窗 */
+    .mask{display:none !important;}
+    .mask.show{display:block !important;position:static;background:none;padding:0;overflow:visible;}
+    .modal{box-shadow:none;margin:0;max-width:100%;padding:0;}
+    .modal-actions{display:none;}
+    .ckhint{display:none;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
     <div>
-      <h1>📥 提交清单后台</h1>
+      <h1>📥 提交清单 · 采购管理</h1>
       <div class="meta" id="meta"></div>
     </div>
-    <button class="refresh-btn" onclick="load()">🔄 刷新</button>
+    <button class="refresh-btn" onclick="load(true)">🔄 刷新</button>
   </div>
-  <div class="auto-tip">页面每 15 秒自动刷新,无需手动操作。</div>
-  <div id="list"></div>
+
+  <div class="toolbar" id="toolbar" style="display:none;">
+    <div class="tb-row">
+      <div class="viewtabs">
+        <button class="vtab on" id="vt-orders" onclick="setView('orders')">📋 订单 <b id="vtc-orders">0</b></button>
+        <button class="vtab gft" id="vt-gifts" onclick="setView('gifts')">🎁 赠品 / 额外 <b id="vtc-gifts">0</b></button>
+      </div>
+      <input class="search" id="q" type="text" placeholder="搜索客户 / 备注 / 商品名…" oninput="setQuery(this.value)">
+    </div>
+    <div class="tb-row">
+      <div class="chips" id="chips"></div>
+      <button class="mini foldall" id="foldall" onclick="toggleAllCards()">全部展开</button>
+    </div>
+  </div>
+
+  <div class="buybar" id="buybar" style="display:none;">
+    <div class="bt">
+      <h2>🛒 采购进度</h2>
+      <div class="bt-actions">
+        <button class="btn btn-gift" onclick="openGf('')">🎁 添加赠送项</button>
+        <button class="btn btn-primary" onclick="openPc()">📋 我的账单(成本)</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="k">已采购</div><div class="v" id="st-count">0 / 0 项</div></div>
+      <div class="stat"><div class="k">实际支出</div><div class="v money" id="st-actual">¥0</div></div>
+      <div class="stat"><div class="k">对应报价</div><div class="v" id="st-quoted">¥0</div></div>
+      <div class="stat"><div class="k" id="st-diff-k">差额</div><div class="v" id="st-diff">¥0</div></div>
+      <div class="stat"><div class="k">已结算订单</div><div class="v settled" id="st-settled">0 / 0 单</div></div>
+    </div>
+    <div class="bar"><i id="st-bar" style="width:0%"></i></div>
+    <div class="note-mode">上面这 4 个数是<b>你自己的口径</b>(实花 vs 报价)。要给客户出清单,点每张卡片右边的「📄 客户清单」。</div>
+  </div>
+
+  <div id="list">
+    <div class="empty">加载中…</div>
+  </div>
 </div>
+
+<!-- 合并采购项弹窗 -->
+<div class="mask" id="mg-mask">
+  <div class="modal">
+    <h3>🔗 合并采购项</h3>
+    <div class="sub">实际用同一个东西替代了几项时勾在这里。报价仍按原样计入,只记一笔实际花销。</div>
+    <div class="mg-list" id="mg-list"></div>
+    <div class="mg-form">
+      <div class="fld"><span>合并后名称</span><input id="mg-name" type="text" placeholder="如:无纺布垫纸" oninput="this.dataset.touched=1"></div>
+      <div class="fld">
+        <span>数量</span><input id="mg-qty" class="qty" type="number" min="1" step="1" value="1">
+        <span style="width:auto;">实际花销 ¥</span><input id="mg-price" type="number" min="0" step="1" placeholder="留空=按报价合计">
+      </div>
+    </div>
+    <div class="mg-sum" id="mg-sum"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeMg()">取消</button>
+      <button class="btn btn-primary" onclick="doMerge()">确定合并</button>
+    </div>
+  </div>
+</div>
+
+<!-- 赠送 / 额外项弹窗 -->
+<div class="mask" id="gf-mask">
+  <div class="modal">
+    <h3>🎁 添加赠送 / 额外项</h3>
+    <div class="sub">不属于原报价的额外东西。<b>客户报价留空</b> = 纯赠品(只增加你的成本,不占客户的清单金额);<b>填了</b> = 会按这个价计入给客户的清单。</div>
+    <div class="mg-form">
+      <div class="fld"><span>名称</span><input id="gf-name" type="text" placeholder="如:小玩具 / 磨牙棒 / 备用食盒"></div>
+      <div class="fld">
+        <span>数量</span><input id="gf-qty" class="qty" type="number" min="1" step="1" value="1">
+        <span style="width:auto;">实际花销 ¥</span><input id="gf-price" type="number" min="0" step="1" placeholder="0">
+      </div>
+      <div class="fld"><span>客户报价 ¥</span><input id="gf-quoted" type="number" min="0" step="1" placeholder="留空 = 纯赠品"></div>
+      <div class="fld"><span>归属客户</span><select id="gf-sub"></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeGf()">取消</button>
+      <button class="btn btn-primary" onclick="doGift()">添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 我的采购账单(成本口径) -->
+<div class="mask" id="pc-mask">
+  <div class="modal">
+    <h3>📋 我的采购账单</h3>
+    <div class="sub" id="pc-sub"></div>
+    <div class="plist" id="pc-list"></div>
+    <div class="ptotal"><span class="lbl">实际支出合计</span><span class="amt" id="pc-total">¥0</span></div>
+    <div class="pcmp" id="pc-cmp"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePc()">关闭</button>
+      <button class="btn btn-ghost" onclick="copyPc()">📄 复制文本</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 打印 / 存PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- 给客户的清单(报价口径) -->
+<div class="mask" id="ck-mask">
+  <div class="modal">
+    <h3>📄 给客户的清单</h3>
+    <div class="sub" id="ck-sub"></div>
+    <div class="ckwrap" id="ck-list"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeCk()">关闭</button>
+      <button class="btn btn-ghost" onclick="copyCk()">📄 复制文本</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 打印 / 发客户</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-// 从当前 URL 读取 key 参数,用于访问受保护接口
+var SHOP = '二南瓜精选';
 var KEY = (location.search.match(/[?&]key=([^&]+)/) || [])[1] || '';
-function load(){
-  fetch('/api/submissions?key='+encodeURIComponent(KEY)).then(function(r){
-    if(r.status === 401){
-      document.getElementById('list').innerHTML = '<div class="empty">未授权。请在网址后加 <b>?key=密码</b> 后访问。</div>';
-      document.getElementById('meta').textContent = '';
-      throw new Error('unauthorized');
-    }
-    return r.json();
-  }).then(function(list){
-    list = list || [];
-    // 按时间倒序(最新在前)
-    list.sort(function(a,b){ return (b.submittedAt||'').localeCompare(a.submittedAt||''); });
-    var el = document.getElementById('list');
-    document.getElementById('meta').textContent = '共 '+list.length+' 条提交';
-    if(list.length === 0){
-      el.innerHTML = '<div class="empty">还没有人提交清单,等朋友提交后这里会自动显示。</div>';
-      return;
-    }
-    var html = '';
-    list.forEach(function(s){
-      html += '<div class="card">';
-      html += '<div class="card-head">';
-      html += '<span class="who">'+esc(s.name||'匿名')+'</span>';
-      html += '<span class="time">'+esc(s.submittedAt||'')+'</span>';
-      html += '<span class="total">合计 ¥'+(s.total||0).toLocaleString('zh-CN')+'</span>';
-      html += '</div>';
-      if(s.note) html += '<div class="note">💬 留言:'+esc(s.note)+'</div>';
-      if(s.remark) html += '<div class="remark"><div class="rl">📝 特别需求备注</div>'+esc(s.remark)+'</div>';
-      (s.groups||[]).forEach(function(g){
-        if(!g.rows || g.rows.length===0) return;
-        html += '<div class="group"><div class="g-title">'+esc(g.title)+'</div>';
-        g.rows.forEach(function(r){
-          html += '<div class="row"><span class="nm">'+esc(r.name)+'</span><span class="pr">¥'+(r.price||0).toLocaleString('zh-CN')+'</span></div>';
-        });
-        html += '</div>';
+var SUBS = [];                                       // 所有提交
+var PURCH = { ver:3, items:{}, subs:{} };            // items: 采购项;subs: 每个客户的实付
+var ITEMS = {};                                      // 本次渲染的采购项 id -> item(供交互取用)
+var pendingSaves = 0;
+
+/* ---------- 视图状态 ---------- */
+var VIEW   = 'orders';   // 'orders' 订单视图 | 'gifts' 赠品/额外项视图
+var FILTER = 'all';      // 当前筛选 chip
+var QUERY  = '';         // 搜索词(客户名 / 备注 / 商品名)
+var FOLDED = {};         // subId -> true=折叠。默认(undefined)也算折叠,点开才设为 false
+
+/* ---------- 工具 ---------- */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n){ return '¥' + (Number(n)||0).toLocaleString('zh-CN', {maximumFractionDigits:2}); }
+function num(v){ var n = Number(v); return isNaN(n) ? 0 : n; }
+function r2(n){ return Math.round((Number(n)||0) * 100) / 100; }
+function hash(s){ var h=0,i; s=String(s||''); for(i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i))|0; } return (h>>>0).toString(36); }
+function sid(s, idx){ return s.id || ('h' + hash((s.submittedAt||'') + (s.name||'') + idx)); }
+function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+/* 从"商品名 ×2"里拆出商品名和数量 */
+function splitName(name){
+  var m = String(name||'').match(/^(.*?)\s*[×xX]\s*(\d+)\s*$/);
+  if(m) return { base: m[1].trim(), qty: parseInt(m[2],10)||1 };
+  return { base: String(name||'').trim(), qty: 1 };
+}
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('show'); }, 1800);
+}
+/* 一个采购项该记多少钱:填了实价用实价,没填就按报价 */
+function amountOf(it){
+  var a = it.actual;
+  if(a === null || a === undefined || a === '') return it.quoted || 0;
+  return num(a);
+}
+function subOf(subId){ return (PURCH.subs || {})[subId] || {}; }
+function paidOf(subId){
+  var p = subOf(subId).paid;
+  return (p === null || p === undefined || p === '') ? null : Number(p);
+}
+
+/* ---------- 交易完成 ---------- */
+/* 合成一条 subs 记录。手动「完成」(done=true)会锁定;手动「撤销」在下一次改动后
+   回到自动判定(即 done 归 null),这样重新买齐+填实付后能自动再次完成。 */
+function mergeSub(cur, paid){
+  cur = cur || {};
+  var keep = (cur.done === true);
+  return {
+    paid: paid,
+    adj: cur.adj || null,
+    done: keep ? true : null,
+    doneAt: keep ? (cur.doneAt || null) : null
+  };
+}
+
+/* 某位客户的采购项:总项数 / 已勾选数 */
+function subCounts(subId){
+  var all = 0, done = 0;
+  Object.keys(ITEMS).forEach(function(k){
+    var it = ITEMS[k];
+    if(it.subId !== subId) return;
+    all++;
+    if(it.checked) done++;
+  });
+  return { all:all, done:done };
+}
+
+/* 判定这一单是否「交易完成」。优先级:手动标记 > 自动判定。
+   手动 done === true  → 完成
+   手动 done === false → 未完成(撤销过,不再自动变回,除非改动实付)
+   未手动过           → 自动:填了「客户实付」就算结算完成
+   为什么不要求"采购项全勾":他常会留一两项故意不买(如客户不要的玩具),
+   那样永远凑不齐"全勾",反而标不了完成。结算的语义就是"钱收到了"。 */
+function settleState(subId){
+  var sv = subOf(subId);
+  var c = subCounts(subId);
+  var st = { manual:false, counts:c };
+  if(sv.done === true){ st.settled = true;  st.manual = true; }
+  else if(sv.done === false){ st.settled = false; st.manual = true; }
+  else { st.settled = (paidOf(subId) !== null); }
+  return st;
+}
+
+function nowStamp(){
+  var d = new Date();
+  function p(n){ return (n<10?'0':'')+n; }
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+
+/* 盖上去的圆章(纯装饰) */
+function stampHtml(){
+  return '<span class="stamp">交易<br>完成</span>';
+}
+
+/* 卡片里的「已完成」印章带 */
+function doneBandHtml(subId){
+  var c = subCalc(subId);
+  var cnt = subCounts(subId);
+  var paid = paidOf(subId);
+  var at = (subOf(subId).doneAt || '').slice(0, 16);
+  var bits = [];
+  if(at) bits.push(at + ' 完成');
+  if(paid !== null){
+    bits.push('实收 ' + money(paid));
+    if(c.n) bits.push('毛利 ' + money(r2(paid - c.actual)));
+  } else {
+    bits.push('未记录客户实付');
+  }
+  var left = cnt.all - cnt.done;
+  return '<div class="doneband">' + stampHtml()
+    + '<span class="db-txt">本单已结算<em> · ' + esc(bits.join(' · ')) + '</em></span>'
+    // 钱收到了但货还没买齐 —— 别让绿色把待办藏起来
+    + (left > 0 ? '<span class="db-warn">还差 ' + left + ' 项没买</span>' : '')
+    + '</div>';
+}
+
+/* 手动 标记完成 / 撤销完成 */
+function toggleSettle(subId, on){
+  if(!PURCH.subs) PURCH.subs = {};
+  var cur = PURCH.subs[subId] || {};
+  var obj = {
+    paid: (cur.paid === undefined ? paidOf(subId) : cur.paid),
+    adj: cur.adj || null,
+    done: !!on,
+    doneAt: on ? nowStamp() : null
+  };
+  PURCH.subs[subId] = obj;
+  var o = {}; o[subId] = obj;
+  savePurchases({}, [], o);
+  render(); renderStats();
+  toast(on ? '已标记为交易完成 ✅' : '已撤销完成标记');
+}
+
+/* 局部刷新一张卡片的完成态(勾选/改实付时不整页重绘) */
+function applySettleUI(card, subId){
+  if(!card) return;
+  var st = settleState(subId);
+  var badge = card.querySelector('.badge');
+  card.classList.toggle('settled', st.settled);
+  if(badge){
+    badge.classList.toggle('settled', st.settled);
+    if(st.settled) badge.textContent = '✅ 交易完成';
+    else badge.textContent = '已购 ' + st.counts.done + '/' + st.counts.all;
+    badge.classList.toggle('all', !st.settled && st.counts.all > 0 && st.counts.done === st.counts.all);
+  }
+  var dw = document.getElementById('dw-' + subId);
+  if(dw) dw.innerHTML = st.settled ? doneBandHtml(subId) : '';
+  var btn = card.querySelector('.mini.settle');
+  if(btn){
+    btn.textContent = st.settled ? '↺ 撤销完成' : '✅ 标记完成';
+    btn.setAttribute('onclick', "toggleSettle('" + subId + "'," + (st.settled ? 'false' : 'true') + ")");
+  }
+}
+
+/* ---------- 加载 ---------- */
+function load(force){
+  syncFromDom();
+  var ae = document.activeElement;
+  if(!force && ae && ae.classList && (ae.classList.contains('ip') || ae.classList.contains('paid'))) return;
+  if(!force && pendingSaves > 0) return;
+  // 弹窗开着的时候不刷新,免得正在看/正在填的内容被重置
+  if(!force && document.querySelector('.mask.show')) return;
+
+  Promise.all([
+    fetch('/api/submissions?key='+encodeURIComponent(KEY)).then(function(r){
+      if(r.status === 401) throw new Error('unauth');
+      return r.json();
+    }),
+    fetch('/api/purchases?key='+encodeURIComponent(KEY)).then(function(r){
+      if(r.status === 401) throw new Error('unauth');
+      return r.json();
+    })
+  ]).then(function(res){
+    SUBS = res[0] || [];
+    var raw = res[1] || {};
+    if(raw && raw.items && typeof raw.items === 'object'){
+      PURCH = { ver:3, items: raw.items, subs: (raw.subs && typeof raw.subs === 'object') ? raw.subs : {} };
+    } else {
+      // 兜底:万一后端还是旧版扁平结构,就地升级
+      var m = {};
+      Object.keys(raw).forEach(function(k){
+        if(k!=='ver' && k!=='items' && k!=='subs' && raw[k] && typeof raw[k] === 'object') m[k] = raw[k];
       });
-      html += '</div>';
-    });
-    el.innerHTML = html;
-  }).catch(function(){
-    document.getElementById('list').innerHTML = '<div class="empty">加载失败。如果你是通过 /admin 打开的,请确认网址里带了 ?key=密码。</div>';
+      PURCH = { ver:3, items:m, subs:{} };
+    }
+    SUBS.sort(function(a,b){ return (b.submittedAt||'').localeCompare(a.submittedAt||''); });
+    document.getElementById('meta').textContent = '共 '+SUBS.length+' 条提交';
+    render();
+    renderStats();
+  }).catch(function(err){
+    document.getElementById('list').innerHTML = '<div class="empty">' +
+      (err && err.message === 'unauth'
+        ? '未授权。请在网址后加 <b>?key=密码</b> 后访问。'
+        : '加载失败。如果你是通过 /admin 打开的,请确认网址里带了 ?key=密码。') + '</div>';
+    document.getElementById('meta').textContent = '';
+    document.getElementById('buybar').style.display = 'none';
   });
 }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- 报价行(不可变,来自朋友提交) ---------- */
+function allRows(){
+  var out = [];
+  SUBS.forEach(function(s, si){
+    var id = sid(s, si);
+    (s.groups||[]).forEach(function(g, gi){
+      (g.rows||[]).forEach(function(r, ri){
+        out.push({ k:id+'|'+gi+'|'+ri, subId:id, gi:gi, ri:ri, title:g.title,
+                   name:r.name, quoted:Number(r.price)||0 });
+      });
+    });
+  });
+  return out;
+}
+
+/* ---------- 构建采购项:报价行(自动) + 用户保存的项 ---------- */
+function buildItems(){
+  var rows = allRows();
+  var byKey = {};
+  rows.forEach(function(r){ byKey[r.k] = r; });
+  var items = PURCH.items || {};
+
+  // 1) 先让"合并项"认领报价行:被认领的行不再单独成项
+  var claimed = {};                       // 报价行 key -> 合并项 id
+  Object.keys(items).forEach(function(id){
+    var it = items[id] || {};
+    var src = it.source || [];
+    if(!it.gift && src.length > 1){
+      src.forEach(function(k){ if(byKey[k]) claimed[k] = id; });
+    }
+  });
+
+  var out = [];
+  var rendered = {};
+
+  // 2) 未被合并认领的报价行 → 自动采购项(可能带用户存的勾选/改价)
+  rows.forEach(function(r){
+    if(claimed[r.k]) return;
+    out.push(mkItem(r.k, items[r.k] || null, [r], false));
+    rendered[r.k] = 1;
+  });
+
+  // 3) 用户保存的项:合并项 / 赠送项 / 改名项 / 孤儿项
+  Object.keys(items).forEach(function(id){
+    if(rendered[id]) return;                        // 上面已作为报价行渲染过
+    var own = claimed[id];
+    if(own && own !== id) return;                   // 这一项已被别的合并项吃掉了
+    var it = items[id] || {};
+    if(it.gift){
+      out.push(mkItem(id, it, [], true));
+      return;
+    }
+    var src = (it.source || []).map(function(k){ return byKey[k]; }).filter(Boolean);
+    // src 为空 = 原报价行已不存在(孤儿);长度为 1 = 被改名/单独改价的项;>1 = 合并项
+    out.push(mkItem(id, it, src, false));
+  });
+  return out;
+}
+
+function mkItem(id, saved, srcRows, isGift){
+  saved = saved || {};
+  var sum = 0;
+  srcRows.forEach(function(r){ sum += r.quoted; });
+  var name;
+  if(saved.label) name = saved.label;
+  else if(srcRows.length) name = srcRows[0].name;
+  else name = isGift ? '赠送' : '(原报价项已不存在)';
+  var orphan = !isGift && srcRows.length === 0;
+  // 手工填过"客户报价"的项(赠送/补充项常见),以手填值为准
+  var qOv = (saved.quoted === 0 || saved.quoted) ? Number(saved.quoted) : null;
+  if(qOv !== null && isNaN(qOv)) qOv = null;
+  return {
+    id: id,
+    name: name,
+    checked: !!saved.checked,
+    actual: (saved.actual === undefined ? null : saved.actual),
+    qty: saved.qty || 1,
+    source: srcRows.map(function(r){ return r.k; }),
+    gift: !!isGift,
+    orphan: orphan,
+    hasQuoted: qOv !== null,
+    quoted: (qOv !== null) ? qOv : ((isGift || orphan) ? 0 : sum),
+    subId: srcRows.length ? srcRows[0].subId : (saved.sub || ''),
+    gi: srcRows.length ? srcRows[0].gi : -1,
+    rows: srcRows,
+    merged: srcRows.length > 1
+  };
+}
+
+/* ---------- 视图切换 / 折叠 / 搜索 / 筛选 ---------- */
+function setView(v){
+  if(VIEW === v) return;
+  VIEW = v; FILTER = 'all';
+  render();
+}
+function setFilter(f){ FILTER = f; render(); }
+var qTimer = null;
+function setQuery(v){
+  QUERY = String(v||'').trim();
+  clearTimeout(qTimer);
+  qTimer = setTimeout(render, 180);
+}
+/* 默认折叠:只有被明确点开过(FOLDED=false)的才算展开 */
+function isFolded(subId){ return FOLDED[subId] !== false; }
+function toggleCard(subId, ev){
+  if(ev) ev.stopPropagation();
+  FOLDED[subId] = !isFolded(subId);      // 折叠<->展开
+  var c = document.getElementById('card-'+subId);
+  if(c){
+    c.classList.toggle('collapsed', FOLDED[subId]);
+    var b = c.querySelector('.fold-btn');
+    if(b) b.textContent = FOLDED[subId] ? '展开 ▾' : '收起 ▴';
+  }
+  syncFoldAllLabel();
+}
+function toggleAllCards(){
+  var cards = [].slice.call(document.querySelectorAll('#list .card[data-sub]'));
+  if(!cards.length) return;
+  // 只要还有展开的就全部收起,否则全部展开
+  var anyExpanded = cards.some(function(c){ return !isFolded(c.getAttribute('data-sub')); });
+  cards.forEach(function(c){
+    var id = c.getAttribute('data-sub');
+    FOLDED[id] = anyExpanded;
+    c.classList.toggle('collapsed', anyExpanded);
+    var b = c.querySelector('.fold-btn');
+    if(b) b.textContent = anyExpanded ? '展开 ▾' : '收起 ▴';
+  });
+  syncFoldAllLabel();
+}
+function syncFoldAllLabel(){
+  var btn = document.getElementById('foldall'); if(!btn) return;
+  var cards = [].slice.call(document.querySelectorAll('#list .card[data-sub]'));
+  if(!cards.length){ btn.style.display = 'none'; return; }
+  btn.style.display = '';
+  var anyExpanded = cards.some(function(c){ return !isFolded(c.getAttribute('data-sub')); });
+  btn.textContent = anyExpanded ? '全部收起' : '全部展开';
+}
+/* 搜索:客户名 / 留言 / 备注 / 商品名 */
+function matchQuery(s){
+  if(!QUERY) return true;
+  var q = QUERY.toLowerCase();
+  if([(s.name||''), (s.note||''), (s.remark||'')].join(' ').toLowerCase().indexOf(q) >= 0) return true;
+  var hit = false;
+  (s.groups||[]).forEach(function(g){
+    (g.rows||[]).forEach(function(r){ if(String(r.name||'').toLowerCase().indexOf(q) >= 0) hit = true; });
+  });
+  return hit;
+}
+/* 一张单子的状态摘要,筛选和徽章都用它 */
+function cardInfo(subId, list){
+  var st = settleState(subId);
+  var giftN = 0;
+  (list||[]).forEach(function(x){ if(x.gift) giftN++; });
+  return { counts:subCounts(subId), settled:st.settled, giftN:giftN, paid:paidOf(subId) };
+}
+
+/* ---------- 渲染 ---------- */
+function render(){
+  var el = document.getElementById('list');
+  var tb = document.getElementById('toolbar');
+  if(!SUBS.length){
+    el.innerHTML = '<div class="empty">还没有人提交清单,等朋友提交后这里会自动显示。</div>';
+    document.getElementById('buybar').style.display = 'none';
+    if(tb) tb.style.display = 'none';
+    return;
+  }
+
+  var items = buildItems();
+  ITEMS = {};
+  items.forEach(function(it){ ITEMS[it.id] = it; });
+
+  var bySub = {};
+  items.forEach(function(it){
+    if(!it.subId) return;
+    if(!bySub[it.subId]) bySub[it.subId] = [];
+    bySub[it.subId].push(it);
+  });
+
+  if(tb) tb.style.display = '';
+  renderToolbar(items);
+  if(VIEW === 'gifts') renderGifts(items, el);
+  else                 renderOrders(items, bySub, el);
+  syncFoldAllLabel();
+}
+
+/* 工具条:视图计数 + 筛选 chips(带条数,不用点进去就知道有没有活) */
+function renderToolbar(items){
+  var gifts = items.filter(function(x){ return x.gift; });
+  var orphan = gifts.filter(function(x){ return !x.subId; });
+  document.getElementById('vtc-orders').textContent = SUBS.length;
+  document.getElementById('vtc-gifts').textContent  = gifts.length;
+
+  var chips = [];
+  if(VIEW === 'gifts'){
+    chips.push(['all',    '全部',        gifts.length]);
+    chips.push(['bound',  '已归属客户',  gifts.length - orphan.length]);
+    chips.push(['orphan', '❓ 未指定客户', orphan.length]);
+  } else {
+    var nTodo = 0, nDone = 0, nGift = 0;
+    SUBS.forEach(function(s, si){
+      var id = sid(s, si);
+      var info = cardInfo(id, bySubOf(id, items));
+      if(info.settled) nDone++; else nTodo++;
+      if(info.giftN) nGift++;
+    });
+    chips.push(['all',     '全部订单', SUBS.length]);
+    chips.push(['todo',    '⏳ 待办',   nTodo]);
+    chips.push(['settled', '✅ 已结算', nDone]);
+    chips.push(['gift',    '🎁 有赠品', nGift]);
+  }
+  document.getElementById('chips').innerHTML = chips.map(function(c){
+    var on = (FILTER === c[0]);
+    return '<button class="chip'+(on?' on':'')+(on && c[0]==='orphan' ? ' gft':'')
+      + '" onclick="setFilter(\''+c[0]+'\')">'+c[1]+' <b>'+c[2]+'</b></button>';
+  }).join('');
+}
+
+function bySubOf(id, items){
+  return items.filter(function(x){ return x.subId === id; });
+}
+
+/* ---------- 订单视图 ---------- */
+function renderOrders(items, bySub, el){
+  var html = '', shown = 0;
+  SUBS.forEach(function(s, si){
+    var id = sid(s, si);
+    if(!matchQuery(s)) return;
+    var list = bySub[id] || [];
+    var info = cardInfo(id, list);
+    if(FILTER === 'todo'    && info.settled) return;
+    if(FILTER === 'settled' && !info.settled) return;
+    if(FILTER === 'gift'    && !info.giftN) return;
+    shown++;
+    html += cardHtml(s, id, list, info);
+  });
+
+  if(!shown){
+    html = '<div class="empty">没有符合条件的订单'
+         + (QUERY ? '(搜索“'+esc(QUERY)+'”)' : '')
+         + '。<br>换个筛选条件,或清空搜索词。</div>';
+  }
+
+  // 未归属客户的额外项:订单视图放不下,给一条跳转提示
+  var lo = items.filter(function(x){ return x.gift && !x.subId; });
+  if(lo.length){
+    html += '<div class="orphanbar" onclick="setView(\'gifts\')">🎁 有 <b>'+lo.length
+         + '</b> 项赠品 / 额外项还没指定客户 —— 点这里去处理 ›</div>';
+  }
+  el.innerHTML = html;
+}
+
+function cardHtml(s, id, list, info){
+  var folded = isFolded(id);
+  var norm = list.filter(function(x){ return !x.gift; });
+  var subGifts = list.filter(function(x){ return x.gift; });
+  var allDone = info.counts.all > 0 && info.counts.done === info.counts.all;
+
+  var h = '';
+  h += '<div class="card'+(allDone?' done':'')+(info.settled?' settled':'')+(folded?' collapsed':'')
+     + '" data-sub="'+esc(id)+'" id="card-'+esc(id)+'">';
+
+  h += '<div class="card-head">';
+  h += '<span class="ch-left">';
+  h += '<span class="who">'+esc(s.name||'匿名')+'</span>';
+  if(info.settled) h += '<span class="badge settled">✅ 交易完成</span>';
+  else             h += '<span class="badge'+(allDone?' all':'')+'">已购 '+info.counts.done+'/'+info.counts.all+'</span>';
+  if(info.giftN)   h += '<span class="gflag">🎁 '+info.giftN+' 项赠品</span>';
+  h += '</span>';
+  h += '<span class="ch-right">';
+  h += '<span class="time">'+esc(s.submittedAt||'')+'</span>';
+  h += '<span class="total">下单 '+money(s.total)+'</span>';
+  h += '<button class="fold-btn" onclick="toggleCard(\''+esc(id)+'\', event)">'
+     + (folded ? '展开 ▾' : '收起 ▴')+'</button>';
+  h += '</span>';
+  h += '</div>';
+
+  h += paybarHtml(id);
+
+  // 以下整块可折叠。明细 DOM 照常存在,只是隐藏 —— 勾选/改价的局部更新逻辑不用改
+  h += '<div class="fold">';
+  h += '<div class="donewrap" id="dw-'+esc(id)+'">'+(info.settled ? doneBandHtml(id) : '')+'</div>';
+  if(s.note)   h += '<div class="note">💬 留言:'+esc(s.note)+'</div>';
+  if(s.remark) h += '<div class="remark"><div class="rl">📝 特别需求备注</div>'+esc(s.remark)+'</div>';
+
+  var placed = {};
+  (s.groups||[]).forEach(function(g, gi){
+    var rows = norm.filter(function(x){ return x.gi === gi; });
+    if(!rows.length) return;
+    rows.forEach(function(x){ placed[x.id] = 1; });
+    h += '<div class="group"><div class="g-title">'+esc(g.title)+'</div>';
+    rows.forEach(function(x){ h += rowHtml(x); });
+    h += '</div>';
+  });
+  // 没落到任何分组里的(孤儿)
+  norm.forEach(function(x){
+    if(placed[x.id]) return;
+    h += '<div class="group">'+rowHtml(x)+'</div>';
+  });
+
+  if(subGifts.length){
+    h += '<div class="group"><div class="g-title">🎁 赠品 / 额外</div>';
+    subGifts.forEach(function(x){ h += rowHtml(x); });
+    h += '</div>';
+  }
+  h += '<button class="btn btn-ghost addgift" onclick="openGf(\''+esc(id)+'\')">＋ 给这个客户加一项(赠送/补足)</button>';
+  h += '</div>';   // .fold
+  h += '</div>';   // .card
+  return h;
+}
+
+/* ---------- 赠品 / 额外项视图(所有赠品集中一处,不管挂在哪张单下) ---------- */
+function renderGifts(items, el){
+  var all = items.filter(function(x){ return x.gift; });
+
+  var secs = [];
+  SUBS.forEach(function(s, si){
+    var id = sid(s, si);
+    var mine = all.filter(function(x){ return x.subId === id; });
+    if(mine.length) secs.push({ sub:s, id:id, list:mine, orphan:false });
+  });
+  var lo = all.filter(function(x){ return !x.subId; });
+  if(lo.length) secs.push({ sub:null, id:'', list:lo, orphan:true });
+
+  if(FILTER === 'bound')  secs = secs.filter(function(x){ return !x.orphan; });
+  if(FILTER === 'orphan') secs = secs.filter(function(x){ return  x.orphan; });
+  if(QUERY){
+    var q = QUERY.toLowerCase();
+    secs = secs.filter(function(x){
+      if(x.orphan) return true;
+      if(String((x.sub && x.sub.name) || '').toLowerCase().indexOf(q) >= 0) return true;
+      return x.list.some(function(y){ return String(y.name||'').toLowerCase().indexOf(q) >= 0; });
+    });
+  }
+
+  if(!secs.length){
+    el.innerHTML = '<div class="empty">这里还没有赠品 / 额外项。<br>'
+      + '在订单卡片里点「＋ 给这个客户加一项」,或者上面汇总条里的「🎁 添加赠送项」。</div>';
+    return;
+  }
+
+  var html = '<div class="gtip">所有<b>赠品 / 额外项</b>都集中在这里,不管挂在哪个客户下。'
+    + '标着「未指定客户」的,在行尾选一下归属,就会并进那位客户的清单。</div>';
+
+  secs.forEach(function(sec){
+    var qsum = 0, asum = 0;
+    sec.list.forEach(function(x){ qsum += (x.quoted||0); asum += amountOf(x); });
+    html += '<div class="card gcard'+(sec.orphan?' orphan':'')+'">';
+    html += '<div class="card-head">';
+    html += '<span class="ch-left"><span class="who">'
+         + (sec.orphan ? '❓ 未指定客户' : '🎁 '+esc(sec.sub.name||'匿名'))+'</span></span>';
+    html += '<span class="ch-right"><span class="gnum">'+sec.list.length+' 项 · 实花 '+money(r2(asum))
+         + (qsum ? ' · 计入客户价 '+money(r2(qsum)) : ' · 不计价')+'</span>';
+    if(!sec.orphan) html += '<button class="mini" onclick="openCk(\''+esc(sec.id)+'\')" title="看看这位客户的清单">📄 客户清单</button>';
+    html += '</span></div>';
+    if(sec.orphan) html += '<div class="gtip">这些还没归属客户,行尾选一个客户即可。</div>';
+    sec.list.forEach(function(x){ html += rowHtml(x, { assign:sec.orphan }); });
+    html += '<button class="btn btn-ghost addgift" onclick="openGf('
+          + (sec.orphan ? "''" : "'"+esc(sec.id)+"'") + ')">＋ 再加一项</button>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+/* 客户结算条:一个客户一行,填实付 + 进客户清单 + 标记交易完成 */
+function paybarHtml(subId){
+  var st = settleState(subId);
+  var h = '<div class="paybar">';
+  h += '<span class="pbl">💰 客户实付 ¥</span>';
+  h += '<input class="paid" type="number" inputmode="decimal" min="0" step="1" data-sub="'+esc(subId)+'"'
+     + ' value="'+esc(paidOf(subId) === null ? '' : paidOf(subId))+'" placeholder="实际转账">';
+  h += '<span class="pdiff" id="pd-'+esc(subId)+'">'+payInfo(subId)+'</span>';
+  h += '<span class="paybtns">';
+  h += '<button class="mini" onclick="openCk(\''+esc(subId)+'\')" title="生成给客户看的清单">📄 客户清单</button>';
+  h += '<button class="mini settle" onclick="toggleSettle(\''+esc(subId)+'\','+(st.settled?'false':'true')+')"'
+     + ' title="'+(st.settled?'撤销完成标记':'把这单标记为已结算')+'">'
+     + (st.settled ? '↺ 撤销完成' : '✅ 标记完成')+'</button>';
+  h += '</span>';
+  h += '</div>';
+  return h;
+}
+
+function rowHtml(x, opts){
+  opts = opts || {};
+  var cls = 'prow' + (x.checked?' on':'') + (x.merged?' merged':'') + (x.gift?' gift':'');
+  var act = (x.actual === null || x.actual === undefined || x.actual === '') ? '' : x.actual;
+  var ph  = (x.merged || x.gift) ? (x.hasQuoted ? x.quoted : 0) : x.quoted;
+  var prText = x.gift
+      ? (x.hasQuoted ? '客户价 '+money(x.quoted) : '赠品 · 不计价')
+      : '报价 '+money(x.quoted);
+  var h = '<div class="'+cls+'" data-id="'+esc(x.id)+'">';
+  h += '<input type="checkbox" class="chk"'+(x.checked?' checked':'')+' data-id="'+esc(x.id)+'">';
+  h += '<span class="nm">';
+  if(x.gift) h += '<i class="tag '+(x.hasQuoted?'tag-extra':'tag-gift')+'">'+(x.hasQuoted?'加':'赠')+'</i>';
+  else if(x.merged) h += '<i class="tag tag-merge">合</i>';
+  h += '<span class="nmt">'+esc(x.name)+'</span>';
+  if(x.merged) h += '<span class="src-toggle" onclick="toggleSrc(\''+esc(x.id)+'\')">含 '+x.rows.length+' 项 ▾</span>';
+  h += '</span>';
+  h += '<span class="meta">';
+  h += '<span class="pr">'+prText+'</span>';
+  h += '<span class="ipw">实花 ¥<input class="ip'+(act!==''?' filled':'')+'" type="number" inputmode="decimal" min="0" step="1"'
+     + ' data-id="'+esc(x.id)+'" data-quoted="'+ph+'" value="'+esc(act)+'" placeholder="'+ph+'"></span>';
+  h += '</span>';
+  // 赠品视图里,未归属的行直接挂一个「归属客户」下拉,省掉一次点开弹窗
+  if(opts.assign){
+    h += '<select class="gsel" data-id="'+esc(x.id)+'">'
+       + '<option value="">归属客户…</option>'
+       + SUBS.map(function(s,i){
+           var v = sid(s,i);
+           return '<option value="'+esc(v)+'">'+esc(s.name||'匿名')+'</option>';
+         }).join('')
+       + '</select>';
+  }
+  if(x.merged)      h += '<button class="mini" onclick="unmerge(\''+esc(x.id)+'\')" title="拆开为原报价项">✂️</button>';
+  else if(x.gift || x.orphan){
+    h += '<button class="mini" onclick="openGf(null, \''+esc(x.id)+'\')" title="修改名称/客户价/归属客户">✏️</button>';
+    h += '<button class="mini" onclick="delGift(\''+esc(x.id)+'\')" title="删除此项">🗑</button>';
+  }
+  else              h += '<button class="mini" onclick="openMg(\''+esc(x.id)+'\')" title="与其它项合并成一笔">🔗</button>';
+  h += '</div>';
+  if(x.merged){
+    h += '<div class="src-list" data-src="'+esc(x.id)+'">'
+       + x.rows.map(function(r){ return esc(r.name)+' <em>'+money(r.quoted)+'</em>'; }).join(' ＋ ')
+       + '</div>';
+  }
+  return h;
+}
+
+function toggleSrc(id){
+  var el = document.querySelector('.src-list[data-src="'+id+'"]');
+  if(el) el.classList.toggle('show');
+}
+
+/* ---------- DOM 值同步(防止刷新丢输入) ---------- */
+function syncFromDom(){
+  var list = document.getElementById('list');
+  if(!list) return;
+  var ips = list.querySelectorAll('input.ip');
+  for(var i=0;i<ips.length;i++){
+    var id = ips[i].getAttribute('data-id');
+    var it = ITEMS[id]; if(!it) continue;
+    var v = ips[i].value.trim();
+    var a = (v === '') ? null : Number(v);
+    if(a !== null && isNaN(a)) a = null;
+    var cur = PURCH.items[id] || {};
+    PURCH.items[id] = {
+      label: cur.label || (it.merged || it.gift ? it.name : null),
+      checked: cur.checked || it.checked || false,
+      actual: a,
+      source: it.source,
+      gift: it.gift,
+      qty: it.qty || 1,
+      quoted: (cur.quoted === undefined ? null : cur.quoted),
+      sub: (cur.sub === undefined ? null : cur.sub)
+    };
+  }
+  var pads = list.querySelectorAll('input.paid');
+  for(var j=0;j<pads.length;j++){
+    var sidv = pads[j].getAttribute('data-sub');
+    if(document.activeElement === pads[j]) continue;   // 正在填的那个不覆盖
+    var pv = pads[j].value.trim();
+    var pv2 = (pv === '') ? null : Number(pv);
+    if(pv2 !== null && isNaN(pv2)) pv2 = null;
+    var cs = (PURCH.subs || {})[sidv] || {};
+    if(cs.paid !== pv2) PURCH.subs[sidv] = mergeSub(cs, pv2);
+  }
+}
+
+/* ---------- 保存(统一入口:同一次请求里可同时新增/更新与删除) ---------- */
+function savePurchases(upsert, remove, subs){
+  upsert = upsert || {};
+  remove = remove || [];
+  subs = subs || {};
+  if(!PURCH.subs) PURCH.subs = {};
+  Object.keys(upsert).forEach(function(k){ PURCH.items[k] = upsert[k]; });
+  remove.forEach(function(k){ delete PURCH.items[k]; });
+  Object.keys(subs).forEach(function(k){ PURCH.subs[k] = subs[k]; });
+  if(!Object.keys(upsert).length && !remove.length && !Object.keys(subs).length) return;
+  pendingSaves++;
+  fetch('/api/purchases?key='+encodeURIComponent(KEY), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ upsert: upsert, remove: remove, subs: subs })
+  }).then(function(r){
+    pendingSaves--;
+    if(!r.ok) toast('保存失败(HTTP '+r.status+')');
+  }, function(){
+    pendingSaves--;
+    toast('保存失败,检查网络');
+  });
+}
+
+/* 由当前采购项生成待保存的载荷 */
+function payloadOf(it, over){
+  var cur = PURCH.items[it.id] || {};
+  over = over || {};
+  return {
+    label: (over.label !== undefined) ? over.label : (cur.label || ((it.merged || it.gift) ? it.name : null)),
+    checked: (over.checked !== undefined) ? over.checked : (cur.checked || it.checked || false),
+    actual: (over.actual !== undefined) ? over.actual : ((cur.actual === undefined) ? it.actual : cur.actual),
+    source: it.source,
+    gift: it.gift,
+    qty: it.qty || 1,
+    quoted: it.hasQuoted ? it.quoted : null,
+    sub: it.gift ? ((over.sub !== undefined) ? over.sub : (cur.sub || it.subId || null)) : null
+  };
+}
+
+function saveOne(id, obj){
+  var up = {};
+  up[id] = obj;
+  savePurchases(up, []);
+}
+
+function removeOne(id){
+  savePurchases({}, [id]);
+}
+
+function saveSub(subId){
+  var o = {};
+  o[subId] = (PURCH.subs || {})[subId] || { paid:null, adj:null, done:null, doneAt:null };
+  savePurchases({}, [], o);
+}
+
+/* 赠品视图:直接在下拉里把一项归属给某个客户(或取消归属) */
+function onGiftAssign(id, subId){
+  var it = ITEMS[id]; if(!it) return;
+  saveOne(id, payloadOf(it, { sub: subId || null }));
+  toast(subId ? '已归属客户' : '已改为「不指定客户」');
+  render(); renderStats();
+}
+
+/* 勾选 / 取消勾选 */
+function onCheck(id, checked, prow){
+  var it = ITEMS[id]; if(!it) return;
+  it.checked = checked;
+  if(prow) prow.classList.toggle('on', checked);
+  // 先把新勾选同步进内存,后面重算「是否已结算」才准
+  saveOne(id, payloadOf(it, { checked: checked }));
+  refreshCardBadge(prow);
+  refreshPaybars();
+}
+
+/* 改实价(防抖保存) */
+var saveTimer = null;
+function onPriceInput(id, val, inp){
+  var it = ITEMS[id]; if(!it) return;
+  var v = String(val).trim();
+  var a = (v === '') ? null : Number(v);
+  if(a !== null && isNaN(a)) a = null;
+  it.actual = a;
+  inp.classList.toggle('filled', v !== '' && Number(v) !== Number(inp.getAttribute('data-quoted')));
+  refreshPaybars();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    var live = ITEMS[id] || it;
+    saveOne(id, payloadOf(live, { actual: a }));
+  }, 600);
+}
+
+/* 改客户实付(防抖保存) */
+var paidTimer = null;
+function onPaidInput(subId, val){
+  var v = String(val).trim();
+  var p = (v === '') ? null : Number(v);
+  if(p !== null && isNaN(p)) p = null;
+  if(!PURCH.subs) PURCH.subs = {};
+  PURCH.subs[subId] = mergeSub(PURCH.subs[subId], p);
+  refreshPaybars();
+  // 实付变了 → 完成态跟着变,顺便刷新卡片配色
+  var card = document.getElementById('card-' + subId);
+  if(card) applySettleUI(card, subId);
+  if(CK && CK.subId === subId) renderCk();
+  clearTimeout(paidTimer);
+  paidTimer = setTimeout(function(){ saveSub(subId); }, 600);
+}
+
+function refreshCardBadge(prow){
+  var card = (prow && prow.closest) ? prow.closest('.card') : null;
+  if(!card) return;
+  var rows = card.querySelectorAll('.prow');
+  var done = card.querySelectorAll('.prow.on').length;
+  // 赠品视图的卡片没有「已购 x/y」徽章,也不该被染成完成色
+  if(!card.classList.contains('gcard')){
+    card.classList.toggle('done', rows.length > 0 && done === rows.length);
+  }
+  var subId = card.getAttribute('data-sub');
+  if(subId){ applySettleUI(card, subId); return; }
+  var badge = card.querySelector('.badge');
+  if(badge){
+    badge.textContent = '已购 ' + done + '/' + rows.length;
+    badge.classList.toggle('all', rows.length > 0 && done === rows.length);
+  }
+}
+
+function refreshPaybars(){
+  SUBS.forEach(function(s, si){
+    var id = sid(s, si);
+    var el = document.getElementById('pd-' + id);
+    if(el) el.innerHTML = payInfo(id);
+  });
+  renderStats();
+}
+
+/* ---------- 事件委托 ---------- */
+document.getElementById('list').addEventListener('change', function(e){
+  var t = e.target;
+  if(!t.classList) return;
+  if(t.classList.contains('gsel')){ onGiftAssign(t.getAttribute('data-id'), t.value); return; }
+  if(!t.classList.contains('chk')) return;
+  onCheck(t.getAttribute('data-id'), t.checked, t.closest ? t.closest('.prow') : null);
+});
+document.getElementById('list').addEventListener('input', function(e){
+  var t = e.target;
+  if(!t.classList) return;
+  if(t.classList.contains('ip')){ onPriceInput(t.getAttribute('data-id'), t.value, t); return; }
+  if(t.classList.contains('paid')){ onPaidInput(t.getAttribute('data-sub'), t.value); return; }
+});
+
+/* ---------- 汇总统计(自己的口径) ---------- */
+function renderStats(){
+  var items = buildItems();
+  ITEMS = {};
+  items.forEach(function(it){ ITEMS[it.id] = it; });
+  if(!items.length){ document.getElementById('buybar').style.display = 'none'; return; }
+
+  var doneCount = 0, spent = 0, quoted = 0, giftCount = 0;
+  items.forEach(function(it){
+    if(!it.checked) return;
+    doneCount++;
+    spent += amountOf(it);
+    quoted += it.quoted || 0;
+    if(it.gift) giftCount++;
+  });
+
+  document.getElementById('buybar').style.display = '';
+  document.getElementById('st-count').textContent = doneCount + ' / ' + items.length + ' 项'
+    + (giftCount ? '(含赠送 '+giftCount+')' : '');
+  document.getElementById('st-actual').textContent = money(spent);
+  document.getElementById('st-quoted').textContent = money(quoted);
+
+  var diff = spent - quoted;
+  var dEl = document.getElementById('st-diff'), kEl = document.getElementById('st-diff-k');
+  if(doneCount === 0){ kEl.textContent = '差额'; dEl.textContent = '—'; dEl.className = 'v'; }
+  else if(diff < 0){ kEl.textContent = '差额 · 剩余'; dEl.textContent = '-'+money(-diff); dEl.className = 'v ok'; }
+  else if(diff > 0){ kEl.textContent = '差额 · 超支'; dEl.textContent = '+'+money(diff); dEl.className = 'v over'; }
+  else { kEl.textContent = '差额 · 持平'; dEl.textContent = money(0); dEl.className = 'v'; }
+  document.getElementById('st-bar').style.width = (items.length ? (doneCount/items.length*100) : 0) + '%';
+
+  // 已结算订单:一条提交 = 一个订单(还没有任何采购项的提交不计入)
+  var setCnt = 0, subTotal = 0;
+  SUBS.forEach(function(s, si){
+    var oneId = sid(s, si);
+    if(!subCounts(oneId).all) return;
+    subTotal++;
+    if(settleState(oneId).settled) setCnt++;
+  });
+  document.getElementById('st-settled').textContent = setCnt + ' / ' + subTotal + ' 单';
+}
+
+/* 某个客户的账:已勾选项的报价合计 / 实花合计 */
+function subCalc(subId){
+  var quoted = 0, actual = 0, n = 0;
+  Object.keys(ITEMS).forEach(function(k){
+    var it = ITEMS[k];
+    if(it.subId !== subId || !it.checked) return;
+    n++;
+    quoted += it.quoted || 0;
+    actual += amountOf(it);
+  });
+  return { quoted:n ? r2(quoted) : 0, actual:r2(actual), n:n };
+}
+
+/* 结算条文案:清单价 / 实花 / 客户已付 / 需要抹多少 / 毛利 */
+function payInfo(subId){
+  var c = subCalc(subId);
+  if(!c.n) return '<span>还没勾选任何项</span>';
+  var paid = paidOf(subId);
+  var parts = ['清单 <b>'+money(c.quoted)+'</b>', '实花 <b>'+money(c.actual)+'</b>'];
+  if(paid === null){
+    parts.push('毛利(按清单) <b class="ok">'+money(r2(c.quoted - c.actual))+'</b>');
+  } else {
+    var adj = r2(paid - c.quoted);
+    parts.push('已付 <b>'+money(paid)+'</b>');
+    if(adj === 0) parts.push('与清单一致 <b>'+money(0)+'</b>');
+    else parts.push((adj < 0 ? '需抹零 ' : '需补收 ') + '<b class="warm">'+money(Math.abs(adj))+'</b>');
+    parts.push('毛利 <b class="ok">'+money(r2(paid - c.actual))+'</b>');
+  }
+  return parts.join(' · ');
+}
+
+/* ---------- 合并 ---------- */
+var MG = null;   // { id, subId, cands:[row], picked:{k:true} }
+
+function openMg(id){
+  var it = ITEMS[id]; if(!it || it.merged || it.gift) return;
+  var subId = it.subId;
+  // 已被"别的合并项"占用的报价行不再列出(要调整先把它拆开)
+  var occupied = {};
+  Object.keys(PURCH.items||{}).forEach(function(mid){
+    if(mid === id) return;
+    var m = PURCH.items[mid]; if(!m || m.gift) return;
+    if((m.source||[]).length > 1) (m.source||[]).forEach(function(k){ occupied[k] = 1; });
+  });
+  var cands = allRows().filter(function(r){
+    return r.subId === subId && !occupied[r.k];
+  });
+  MG = { id:id, subId:subId, cands:cands, picked:{} };
+  (it.source.length ? it.source : [id]).forEach(function(k){ MG.picked[k] = true; });
+  var nm = document.getElementById('mg-name');
+  nm.value = ''; delete nm.dataset.touched;
+  document.getElementById('mg-qty').value = 1;
+  document.getElementById('mg-price').value = (it.actual === null || it.actual === undefined) ? '' : it.actual;
+  renderMg();
+  document.getElementById('mg-mask').classList.add('show');
+  setTimeout(function(){ nm.focus(); }, 50);
+}
+
+function mgPicked(){
+  return MG.cands.filter(function(r){ return MG.picked[r.k]; });
+}
+
+function renderMg(){
+  var picked = mgPicked();
+  var sum = 0;
+  picked.forEach(function(r){ sum += r.quoted; });
+  document.getElementById('mg-list').innerHTML = MG.cands.map(function(r){
+    var on = !!MG.picked[r.k];
+    return '<label class="mgrow'+(on?' on':'')+'">'
+      + '<input type="checkbox" class="mgchk"'+(on?' checked':'')+' data-k="'+esc(r.k)+'">'
+      + '<span class="mgname">'+esc(r.name)+'</span>'
+      + '<span class="mgq">'+money(r.quoted)+'</span></label>';
+  }).join('');
+  document.getElementById('mg-sum').innerHTML = '已选 <b>'+picked.length+'</b> 项 · 报价合计 <b>'+money(sum)+'</b>';
+  var nm = document.getElementById('mg-name');
+  if(nm && !nm.dataset.touched && picked.length){
+    nm.value = picked.map(function(r){ return splitName(r.name).base; }).join('/').slice(0,60);
+  }
+}
+
+document.getElementById('mg-list').addEventListener('change', function(e){
+  var t = e.target;
+  if(!t.classList || !t.classList.contains('mgchk')) return;
+  var k = t.getAttribute('data-k');
+  if(t.checked) MG.picked[k] = true; else delete MG.picked[k];
+  if(t.parentNode) t.parentNode.classList.toggle('on', t.checked);
+  renderMg();
+});
+
+function doMerge(){
+  if(!MG) return;
+  var picked = mgPicked();
+  if(!picked.length){ toast('至少勾选 1 项'); return; }
+  var name = document.getElementById('mg-name').value.trim();
+  if(!name){ toast('请填写合并后的名称'); return; }
+  var qty = Math.max(1, parseInt(document.getElementById('mg-qty').value, 10) || 1);
+  var pRaw = document.getElementById('mg-price').value.trim();
+  var actual = (pRaw === '') ? null : Number(pRaw);
+  if(actual !== null && isNaN(actual)) actual = null;
+
+  var newId = uid('m_');
+  var obj = { label:name, checked:true, actual:actual, qty:qty,
+              source:picked.map(function(r){ return r.k; }), gift:false,
+              quoted:null, sub:null };
+
+  // 删掉被吃掉的独立采购项(以及新认领的旧 id)
+  var remove = [];
+  picked.forEach(function(r){ if(PURCH.items[r.k]) remove.push(r.k); });
+  if(PURCH.items[MG.id]) remove.push(MG.id);
+  remove = remove.filter(function(v,i,a){ return a.indexOf(v) === i; });
+
+  var up = {}; up[newId] = obj;
+  savePurchases(up, remove);       // 同一个请求里"新增合并项 + 删除被吃掉的旧项"
+  closeMg();
+  render(); renderStats();
+  toast('已合并为「' + name + '」');
+}
+
+function closeMg(){ document.getElementById('mg-mask').classList.remove('show'); MG = null; }
+
+function unmerge(id){
+  var it = ITEMS[id]; if(!it) return;
+  var n = it.rows.length;
+  removeOne(id);
+  render(); renderStats();
+  toast('已拆开为 ' + n + ' 个原报价项');
+}
+
+/* ---------- 赠送 / 额外项 ---------- */
+var GF_EDIT = null;   // 非空 = 正在编辑已存在的采购项 id
+
+function openGf(subId, editId){
+  GF_EDIT = editId || null;
+  var it = GF_EDIT ? ITEMS[GF_EDIT] : null;
+  document.getElementById('gf-name').value  = it ? it.name : '';
+  document.getElementById('gf-qty').value   = it ? (it.qty || 1) : 1;
+  document.getElementById('gf-price').value = it ? ((it.actual === null || it.actual === undefined) ? '' : it.actual) : '';
+  document.getElementById('gf-quoted').value = (it && it.hasQuoted) ? it.quoted : '';
+  var sel = document.getElementById('gf-sub');
+  sel.innerHTML = '<option value="">— 不指定(全局额外) —</option>'
+    + SUBS.map(function(s,i){
+        var id = sid(s,i);
+        return '<option value="'+esc(id)+'">'+esc((s.name||'匿名')+' · '+money(s.total))+'</option>';
+      }).join('');
+  sel.value = it ? (it.subId || '') : (subId || '');
+  document.querySelector('#gf-mask h3').textContent = it ? '✏️ 修改这一项' : '🎁 添加赠送 / 额外项';
+  document.querySelector('#gf-mask .modal-actions .btn-primary').textContent = it ? '保存' : '添加';
+  document.getElementById('gf-mask').classList.add('show');
+  setTimeout(function(){ document.getElementById('gf-name').focus(); }, 50);
+}
+function closeGf(){
+  document.getElementById('gf-mask').classList.remove('show');
+  GF_EDIT = null;
+}
+
+function doGift(){
+  var name = document.getElementById('gf-name').value.trim();
+  if(!name){ toast('请填写名称'); return; }
+  var qty = Math.max(1, parseInt(document.getElementById('gf-qty').value, 10) || 1);
+  var pRaw = document.getElementById('gf-price').value.trim();
+  var actual = (pRaw === '') ? 0 : Number(pRaw);
+  if(isNaN(actual)) actual = 0;
+  var qRaw = document.getElementById('gf-quoted').value.trim();
+  var quoted = (qRaw === '') ? null : Number(qRaw);
+  if(quoted !== null && (isNaN(quoted) || quoted < 0)) quoted = null;
+  var sub = document.getElementById('gf-sub').value || null;
+
+  var id = GF_EDIT || uid('g_');
+  var src = GF_EDIT && ITEMS[GF_EDIT] ? ITEMS[GF_EDIT].source : [];
+  var up = {};
+  up[id] = { label:name, checked:true, actual:actual, qty:qty, source:src, gift:true, quoted:quoted, sub:sub };
+  savePurchases(up, []);
+  var wasEdit = !!GF_EDIT;
+  closeGf();
+  render(); renderStats();
+  toast(wasEdit ? '已保存' : '已添加「' + name + '」');
+}
+
+function delGift(id){
+  removeOne(id);
+  render(); renderStats();
+  toast('已删除');
+}
+
+/* ---------- 我的采购账单(成本口径) ---------- */
+var PC_DATA = null;
+
+function openPc(){
+  syncFromDom();
+  var items = buildItems().filter(function(x){ return x.checked; });
+  if(!items.length){ toast('还没有勾选任何已采购项'); return; }
+
+  var map = {}, order = [], giftItems = [];
+  var totalAmt = 0, totalQuoted = 0, totalQty = 0;
+
+  items.forEach(function(x){
+    var amt = amountOf(x);
+    totalAmt += amt;
+    if(x.gift && !x.hasQuoted){
+      giftItems.push({ name:x.name, qty:x.qty || 1, amount:amt });
+      totalQty += x.qty || 1;
+      return;
+    }
+    totalQuoted += x.quoted || 0;
+    var name, qty;
+    if(x.merged || x.gift){ name = x.name; qty = x.qty || 1; }
+    else { var sp = splitName(x.name); name = sp.base; qty = sp.qty; }
+    if(!map[name]){ map[name] = { name:name, qty:0, amount:0 }; order.push(name); }
+    map[name].qty += qty;
+    map[name].amount += amt;
+    totalQty += qty;
+  });
+
+  var list = order.map(function(k){ return map[k]; });
+  list.sort(function(a,b){ return b.amount - a.amount; });
+  giftItems.sort(function(a,b){ return b.amount - a.amount; });
+
+  PC_DATA = { list:list, gifts:giftItems, totalAmt:r2(totalAmt), totalQuoted:r2(totalQuoted), totalQty:totalQty };
+
+  var html = '';
+  if(list.length){
+    html += '<div class="psec">商品采购</div>';
+    html += list.map(function(it){
+      return '<div class="pitem"><span class="n">'+esc(it.name)+'</span>'
+        + '<span class="q">×'+it.qty+'</span>'
+        + '<span class="m">'+money(it.amount)+'</span></div>';
+    }).join('');
+  }
+  if(giftItems.length){
+    html += '<div class="psec">赠品 / 额外(不计价)</div>';
+    html += giftItems.map(function(it){
+      return '<div class="pitem g"><span class="n">'+esc(it.name)+'</span>'
+        + '<span class="q">×'+it.qty+'</span>'
+        + '<span class="m">'+money(it.amount)+'</span></div>';
+    }).join('');
+  }
+
+  document.getElementById('pc-list').innerHTML = html;
+  document.getElementById('pc-total').textContent = money(PC_DATA.totalAmt);
+
+  var diff = r2(PC_DATA.totalAmt - PC_DATA.totalQuoted);
+  var cmp = '共 '+list.length+' 种 / '+totalQty+' 件 · 对应报价 '+money(PC_DATA.totalQuoted);
+  if(diff < 0) cmp += ' · 比报价省 ' + money(-diff);
+  else if(diff > 0) cmp += ' · 比报价多 ' + money(diff);
+  else cmp += ' · 与报价持平';
+  document.getElementById('pc-cmp').textContent = cmp;
+  document.getElementById('pc-sub').textContent = '生成时间 ' + new Date().toLocaleString('zh-CN') + ' · 仅自己可见(成本口径)';
+
+  document.getElementById('pc-mask').classList.add('show');
+}
+
+function closePc(){ document.getElementById('pc-mask').classList.remove('show'); }
+
+function copyPc(){
+  if(!PC_DATA) return;
+  var L = ['【我的采购账单 · 成本口径】'+SHOP, new Date().toLocaleString('zh-CN'), '-'.repeat(26)];
+  if(PC_DATA.list.length){
+    L.push('· 商品采购');
+    PC_DATA.list.forEach(function(it){ L.push('  ' + it.name + '  ×' + it.qty + '  ' + money(it.amount)); });
+  }
+  if(PC_DATA.gifts.length){
+    L.push('· 赠品 / 额外(不计价)');
+    PC_DATA.gifts.forEach(function(it){ L.push('  ' + it.name + '  ×' + it.qty + '  ' + money(it.amount)); });
+  }
+  L.push('-'.repeat(26));
+  L.push('实际支出合计:' + money(PC_DATA.totalAmt));
+  L.push('对应报价:' + money(PC_DATA.totalQuoted));
+  copyText(L.join('\n'));
+}
+
+/* ---------- 给客户的清单(报价口径) ---------- */
+var CK = null;   // { subId, name, list, calc }
+
+function openCk(subId){
+  syncFromDom();
+  var s = null;
+  SUBS.forEach(function(x,i){ if(sid(x,i) === subId) s = x; });
+  if(!s){ toast('找不到这条提交'); return; }
+  var list = [];
+  Object.keys(ITEMS).forEach(function(k){
+    var it = ITEMS[k];
+    if(it.subId === subId && it.checked) list.push(it);
+  });
+  CK = { subId:subId, name:(s.name || '客户'), list:list, time:(s.submittedAt||'') };
+  renderCk();
+  document.getElementById('ck-mask').classList.add('show');
+}
+
+function closeCk(){ document.getElementById('ck-mask').classList.remove('show'); CK = null; }
+
+function renderCk(){
+  if(!CK) return;
+  var subId = CK.subId, list = CK.list;
+  var goods = [], extras = [], gifts = [];
+  var bill = 0, cost = 0, pieces = 0;
+
+  list.forEach(function(it){
+    var q = it.quoted || 0;
+    bill += q; cost += amountOf(it); pieces += (it.qty || 1);
+    if(!it.gift) goods.push(it);
+    else if(q > 0) extras.push(it);
+    else gifts.push(it);
+  });
+  bill = r2(bill); cost = r2(cost);
+
+  var paid = paidOf(subId);
+  var adj = (paid === null) ? 0 : r2(paid - bill);
+  var adjLabel = (adj < 0) ? (subOf(subId).adj || '抹零优惠') : '补收';
+  var priced = r2(pieces - gifts.reduce(function(s,it){ return s + (it.qty||1); }, 0));
+  CK.calc = { goods:goods, extras:extras, gifts:gifts, bill:bill, cost:cost,
+              pieces:pieces, priced:priced, paid:paid, adj:adj, adjLabel:adjLabel,
+              settled:settleState(subId).settled };
+
+  var h = '';
+  h += '<div class="ckhead">'+esc(SHOP)+' · '+esc(CK.name)+' 的清单</div>';
+  h += '<div class="ckmeta">'+(CK.time ? ('提交时间 '+esc(CK.time)+' · ') : '')+'生成 '+new Date().toLocaleDateString('zh-CN')+'</div>';
+
+  if(!list.length){
+    h += '<div class="ckempty">这条提交还没有勾选「已采购」的项。<br>勾选之后,才会出现在给客户的清单里。</div>';
+  }
+  if(goods.length){
+    h += '<div class="psec">商品</div>';
+    goods.forEach(function(it){ h += ckRow(it.name, it.qty||1, it.quoted||0); });
+  }
+  if(extras.length){
+    h += '<div class="psec">额外</div>';
+    extras.forEach(function(it){ h += ckRow(it.name, it.qty||1, it.quoted||0); });
+  }
+  if(gifts.length){
+    h += '<div class="psec">🎁 赠品(免费)</div>';
+    gifts.forEach(function(it){ h += ckRow(it.name, it.qty||1, null); });
+  }
+
+  h += '<div class="cksum">';
+  h += '<div class="ckline"><span>合计 '+priced+' 件 · 商品明细</span><b>'+money(bill)+'</b></div>';
+  h += '<div class="ckline"><span>客户实付 ¥</span>'
+     + '<input class="paid" data-sub="'+esc(subId)+'" type="number" inputmode="decimal" min="0" step="1"'
+     + ' value="'+esc(paid === null ? '' : paid)+'" placeholder="实际转账"></div>';
+  if(paid === null){
+    h += '<div class="ckline total"><span>客户应付合计</span><b>'+money(bill)+'</b></div>';
+    h += '<div class="ckhint">填上客户<b>实际转给你</b>的钱:少了自动生成「抹零优惠」,多了生成「补收」,清单总额会正好等于实付。</div>';
+  } else {
+    if(adj !== 0) h += '<div class="ckline adj"><span>'+esc(adjLabel)+'</span><b>'+(adj<0?'−':'+')+money(Math.abs(adj))+'</b></div>';
+    h += '<div class="ckline total"><span>客户应付合计</span><b>'+money(paid)+'</b></div>';
+  }
+  h += '</div>';
+
+  // 已结清 → 单据底部盖一枚章
+  if(CK.calc.settled){
+    var at = (subOf(subId).doneAt || '').slice(0, 16);
+    h += '<div class="ckstamp">' + stampHtml()
+       + '<span class="cks-text">本单已结清<em>' + esc(at ? (at + ' 完成 · 货款已付清') : '货款已付清') + '</em></span></div>';
+  }
+
+  document.getElementById('ck-list').innerHTML = h;
+  var sub = new Date().toLocaleString('zh-CN') + ' · ' + SHOP;
+  if(paid !== null) sub += ' · 客户已付 ' + money(paid);
+  document.getElementById('ck-sub').textContent = sub;
+}
+
+function ckRow(name, qty, amt){
+  return '<div class="ckrow'+(amt===null?' free':'')+'"><span class="cn">'+esc(name)+'</span>'
+    + '<span class="cq">×'+qty+'</span>'
+    + '<span class="cm">'+(amt===null ? '赠品' : money(amt))+'</span></div>';
+}
+
+/* 客户清单里也能直接填实付 */
+document.getElementById('ck-list').addEventListener('input', function(e){
+  var t = e.target;
+  if(t.classList && t.classList.contains('paid')) onPaidInput(t.getAttribute('data-sub'), t.value);
+});
+
+function copyCk(){
+  if(!CK || !CK.calc) return;
+  var c = CK.calc;
+  var L = ['【'+SHOP+' · 采购清单】', '客户:' + CK.name, '日期:' + new Date().toLocaleDateString('zh-CN'), '-'.repeat(26)];
+  if(c.goods.length){
+    L.push('· 商品');
+    c.goods.forEach(function(it){ L.push('  ' + it.name + '  ×' + (it.qty||1) + '  ' + money(it.quoted||0)); });
+  }
+  if(c.extras.length){
+    L.push('· 额外');
+    c.extras.forEach(function(it){ L.push('  ' + it.name + '  ×' + (it.qty||1) + '  ' + money(it.quoted||0)); });
+  }
+  if(c.gifts.length){
+    L.push('· 赠品(免费)');
+    c.gifts.forEach(function(it){ L.push('  ' + it.name + '  ×' + (it.qty||1) + '  赠品'); });
+  }
+  L.push('-'.repeat(26));
+  L.push('商品明细合计:' + money(c.bill));
+  if(c.paid !== null){
+    if(c.adj !== 0) L.push(c.adjLabel + ':' + (c.adj<0?'−':'+') + money(Math.abs(c.adj)));
+    L.push('客户应付合计:' + money(c.paid));
+  } else {
+    L.push('客户应付合计:' + money(c.bill));
+  }
+  if(!c.goods.length && !c.extras.length && !c.gifts.length) L.push('(这条提交还没有勾选已采购的项)');
+  if(c.settled) L.push('', '★ 本单已结清 · 货款已付清 ★');
+  copyText(L.join('\n'));
+}
+
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ toast('已复制到剪贴板'); }, function(){ fallbackCopy(text); });
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('已复制到剪贴板'); }catch(e){ toast('复制失败,请手动选择'); }
+  document.body.removeChild(ta);
+}
+
+/* ---------- 关闭弹窗 ---------- */
+['pc-mask','mg-mask','gf-mask','ck-mask'].forEach(function(mid){
+  document.getElementById(mid).addEventListener('click', function(e){
+    if(e.target !== this) return;
+    if(mid === 'pc-mask') closePc();
+    else if(mid === 'mg-mask') closeMg();
+    else if(mid === 'gf-mask') closeGf();
+    else closeCk();
+  });
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  closePc(); closeGf(); closeCk();
+  if(MG) closeMg();
+});
+
 load();
 setInterval(load, 15000);
 </script>
